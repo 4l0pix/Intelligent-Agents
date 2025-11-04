@@ -208,7 +208,7 @@ return np.mean(total_rewards, axis=0), np.mean(optimal_actions, axis=0)
 ---
 
 ## 4. Ανάλυση Αποτελεσμάτων
-[Alt Text](bandit_results.png)
+[alt text](bandit_results.png)
 
 ### 4.1 Γράφημα 1: Μέση Ανταμοιβή ανά Παιχνίδι
 
