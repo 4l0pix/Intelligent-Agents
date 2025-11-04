@@ -62,7 +62,7 @@ Q_{t+1}(i) = Q_t(i) + (1/N_t(i)) * (r_t - Q_t(i))
 P(a_t = i) = exp(Q_t(i)/τ) / Σ_j exp(Q_t(j)/τ)
 ```
 
-όπου τ > 0 είναι η παράμετρος θερμοκρασίας που ελέγχει το επίπεδο exploration:
+όπου τ > 0 είναι η παράμετρος που ελέγχει το επίπεδο exploration:
 - τ → 0: Καθαρή εκμετάλλευση (greedy)
 - τ → ∞: Uniform τυχαία επιλογή
 - τ = 1: Balanced exploration-exploitation
@@ -71,7 +71,7 @@ P(a_t = i) = exp(Q_t(i)/τ) / Σ_j exp(Q_t(j)/τ)
 Όπως στον ε-greedy: Q_{t+1}(i) = Q_t(i) + (1/N_t(i)) * (r_t - Q_t(i))
 
 **Θεωρητικές Ιδιότητες:**
-- Smoother exploration: Υψηλότερες πιθανότητες σε πιο υποσχόμενους μοχλούς
+- Smoother exploration: Υψηλότερες πιθανότητες σε πιο "υποσχόμενους" μοχλούς
 - Adaptive exploration: Η exploration μειώνεται φυσικά καθώς οι διαφορές στις εκτιμήσεις μεγαλώνουν
 - Υπολογιστικά πιο ακριβής λόγω του υπολογισμού exponentials
 
@@ -119,27 +119,27 @@ optimal_arm = np.argmax(true_means)
 
 **Σχεδιαστικές Επιλογές:**
 - Χρήση Uniform(0,2) για τις μέσες τιμές εξασφαλίζει επαρκή διαφοροποίηση
-- Η τυπική απόκλιση σ=1.0 δημιουργεί υπερκάλυψη στις κατανομές (σημαντικό για exploration)
+- Η τυπική απόκλιση σ=1.0 δημιουργεί υπερκάλυψη στις κατανομές (σημαντικό για exploration), προφανώς μπορούμε να "παίξουμε" και με αυτή την μεταβλητή.
 
 #### 3.2.2 Συνάρτηση ε-greedy
 
 ```python
 def epsilon_greedy(epsilon=0.1):
     for _ in range(n_experiments):
-        counts = np.zeros(n_arms)      # N_t(i): Πλήθος επιλογών
-        values = np.zeros(n_arms)      # Q_t(i): Εκτιμήσεις
+        counts = np.zeros(n_arms)      #N_t(i): Πλήθος επιλογών
+        values = np.zeros(n_arms)      #Q_t(i): Εκτιμήσεις
         
         for _ in range(n_plays):
-            # Exploration vs Exploitation
+            #Exploration vs Exploitation
             if np.random.random() < epsilon:
                 arm = np.random.randint(n_arms)
             else:
                 arm = np.argmax(values)
             
-            # Sampling από περιβάλλον
+            #Sampling από περιβάλλον
             reward = np.random.normal(true_means[arm], 1.0)
             
-            # Incremental update
+            #Incremental update
             counts[arm] += 1
             values[arm] += (reward - values[arm]) / counts[arm]
 ```
@@ -208,6 +208,7 @@ return np.mean(total_rewards, axis=0), np.mean(optimal_actions, axis=0)
 ---
 
 ## 4. Ανάλυση Αποτελεσμάτων
+[Alt Text](bandit_results.png)
 
 ### 4.1 Γράφημα 1: Μέση Ανταμοιβή ανά Παιχνίδι
 
