@@ -319,36 +319,6 @@ return np.mean(total_rewards, axis=0), np.mean(optimal_actions, axis=0)
 
 ---
 
-## 6. Συμπεράσματα
-
-### 6.1 Κύρια Ευρήματα
-
-1. **Απόδοση**: Το ε-greedy με ε=0.1 υπερτερεί κατά 7.5% σε αθροιστική ανταμοιβή
-2. **Σταθερότητα**: Το Softmax παρέχει πιο σταθερές, προβλέψιμες ανταμοιβές
-3. **Παράμετροι**: Η απόδοση του Softmax είναι πολύ ευαίσθητη στην επιλογή του τ
-4. **Complexity Trade-off**: Και οι δύο έχουν O(Tn), αλλά ε-greedy είναι απλούστερος
-
-### 6.2 Πρακτικές Συστάσεις
-
-**Χρησιμοποιήστε ε-greedy όταν:**
-- Χρειάζεστε απλότητα και robustness
-- Το regret είναι κρίσιμο (e.g., clinical trials)
-- Δεν έχετε χρόνο για parameter tuning
-
-**Χρησιμοποιήστε Softmax όταν:**
-- Χρειάζεστε smooth, differentiable πολιτικές (για gradient methods)
-- Μπορείτε να κάνετε calibration του τ
-- Θέλετε σταδιακή μετάβαση exploration → exploitation
-
-### 6.3 Μελλοντική Εργασία
-
-1. **Adaptive Algorithms**: Thompson Sampling, UCB1, Exp3
-2. **Contextual Bandits**: Χρήση features για την επιλογή μοχλών
-3. **Non-stationary Environments**: Sliding windows, discounted updates
-4. **Multi-objective**: Pareto-optimal exploration-exploitation
-
----
-
 ## Βιβλιογραφία
 
 [1] Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press.
