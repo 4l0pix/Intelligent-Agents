@@ -1,0 +1,37 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  push:
+    branches:
+      - main # Or whatever your default branch is
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # or windows-latest, the path syntax is the same
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # If you have a build step, add it here before uploading
+      # - name: Build project
+      #   run: |
+      #     npm install
+      #     npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          # The path is relative to the repository root
+          path: './BlackJack/webapp' 
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
