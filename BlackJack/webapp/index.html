@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack - Monte Carlo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Training Screen -->
+    <div id="training-screen" class="screen">
+        <div class="training-container">
+            <h1>Monte Carlo Casino</h1>
+            <p class="subtitle">Train the AI Bot using Monte Carlo Exploring Starts</p>
+            
+            <div class="training-form">
+                <label for="episodes">Number of Training Episodes:</label>
+                <input type="range" id="episodes" min="1000" max="500000" value="50000" step="1000">
+                <span id="episodes-value">50,000</span>
+                
+                <div class="preset-buttons">
+                    <button onclick="setEpisodes(10000)">Quick (10K)</button>
+                    <button onclick="setEpisodes(50000)" class="selected">Standard (50K)</button>
+                    <button onclick="setEpisodes(500000)">Thorough (500K)</button>
+                </div>
+                
+                <button id="train-btn" class="primary-btn" onclick="startTraining()">
+                    Train the Bot
+                </button>
+            </div>
+            
+            <div id="training-progress" class="hidden">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <p id="progress-text">Training... 0%</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+        <!-- Info Modal -->
+        <div id="info-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeInfoModal()">&times;</span>
+                <h2>Bot's Learned Strategy</h2>
+                <div class="policy-tables">
+                    <div class="policy-section">
+                        <h3>Without Usable Ace</h3>
+                        <div id="policy-no-ace" class="policy-grid"></div>
+                    </div>
+                    <div class="policy-section">
+                        <h3>With Usable Ace</h3>
+                        <div id="policy-ace" class="policy-grid"></div>
+                    </div>
+                </div>
+                <div class="legend">
+                    <span class="legend-item"><span class="legend-color stick"></span> Stick</span>
+                    <span class="legend-item"><span class="legend-color hit"></span> Hit</span>
+                </div>
+                <p class="policy-explanation">
+                    The tables show the optimal action for each combination of player sum (rows) 
+                    and dealer's visible card (columns). The bot learned this strategy through 
+                    <strong id="trained-episodes">50,000</strong> simulated games using Monte Carlo Exploring Starts.
+                </p>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header>
+            <h1>Blackjack Casino</h1>
+            <button class="info-btn" onclick="showInfoModal()" title="View Bot Strategy">
+                Bot Strategy
+            </button>
+        </header>
+
+        <!-- Casino Table -->
+        <div class="casino-table">
+            <!-- Dealer Section -->
+            <div class="player-section dealer-section">
+                <div class="player-label">
+                    <span class="player-icon"></span>
+                    <span>DEALER</span>
+                    <span id="dealer-sum" class="sum-badge"></span>
+                </div>
+                <div id="dealer-cards" class="cards-container"></div>
+            </div>
+
+            <!-- Middle Section with Bot -->
+            <div class="bot-section">
+                <div class="player-label">
+                    <span class="player-icon"></span>
+                    <span>Carolos</span>
+                    <span id="bot-sum" class="sum-badge"></span>
+                    <span id="bot-action" class="action-badge"></span>
+                </div>
+                <div id="bot-cards" class="cards-container"></div>
+                <div id="bot-result" class="result-badge"></div>
+            </div>
+
+            <!-- Player Section -->
+            <div class="player-section user-section">
+                <div class="player-label">
+                    <span class="player-icon"></span>
+                    <span>YOU</span>
+                    <span id="player-sum" class="sum-badge"></span>
+                </div>
+                <div id="player-cards" class="cards-container"></div>
+                <div id="player-result" class="result-badge"></div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="hit-btn" class="game-btn hit-btn" onclick="playerHit()">
+                👆 HIT
+            </button>
+            <button id="stick-btn" class="game-btn stick-btn" onclick="playerStick()">
+                ✋ STICK
+            </button>
+            <button id="new-round-btn" class="game-btn new-round-btn hidden" onclick="newRound()">
+                New Round
+            </button>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="scoreboard">
+            <div class="score-section">
+                <h3>Your Score</h3>
+                <div class="score-details">
+                    <span class="win">Wins: <span id="player-wins">0</span></span>
+                    <span class="loss">Losses: <span id="player-losses">0</span></span>
+                    <span class="tie">Ties: <span id="player-ties">0</span></span>
+                </div>
+            </div>
+            <div class="score-section">
+                <h3>Bot Score</h3>
+                <div class="score-details">
+                    <span class="win">Wins: <span id="bot-wins">0</span></span>
+                    <span class="loss">Losses: <span id="bot-losses">0</span></span>
+                    <span class="tie">Ties: <span id="bot-ties">0</span></span>
+                </div>
+            </div>
+            <button class="reset-btn" onclick="resetScores()">Reset Scores</button>
+        </div>
+
+        <!-- Game Log -->
+        <div class="game-log">
+            <h3>Game Log</h3>
+            <div id="log-container"></div>
+        </div>
+    </div>
+
+    <script src="montecarlo.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

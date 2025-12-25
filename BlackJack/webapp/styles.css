@@ -1,0 +1,877 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    color: #fff;
+    font-size: 14px;
+}
+
+.screen {
+    min-height: 100vh;
+    padding: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Training Screen */
+.training-container {
+    max-width: 450px;
+    margin: 20px auto;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.training-container h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+    color: #aaa;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.training-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.training-form label {
+    font-size: 0.95rem;
+    color: #ddd;
+}
+
+.training-form input[type="range"] {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #2a2a4a;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.training-form input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffd700;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+}
+
+#episodes-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.preset-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.preset-buttons button {
+    padding: 6px 14px;
+    border: 2px solid #ffd700;
+    background: transparent;
+    color: #ffd700;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.preset-buttons button:hover,
+.preset-buttons button.selected {
+    background: #ffd700;
+    color: #1a1a2e;
+}
+
+.primary-btn {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+    border: none;
+    border-radius: 25px;
+    color: #1a1a2e;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.primary-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+}
+
+.primary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 15px;
+    background: #2a2a4a;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700 0%, #ff8c00 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+#progress-text {
+    margin-top: 8px;
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+/* Game Screen */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+header h1 {
+    font-family: 'Playfair Display', serif;
+    color: #ffd700;
+    font-size: 1.2rem;
+}
+
+.info-btn {
+    padding: 6px 12px;
+    background: rgba(255, 215, 0, 0.2);
+    border: 2px solid #ffd700;
+    color: #ffd700;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.info-btn:hover {
+    background: #ffd700;
+    color: #1a1a2e;
+}
+
+/* Casino Table */
+.casino-table {
+    background: linear-gradient(180deg, #0d5c2e 0%, #0a4a25 50%, #073d1e 100%);
+    border-radius: 80px 80px 15px 15px;
+    padding: 15px;
+    margin: 0 auto;
+    max-width: 500px;
+    border: 8px solid #4a3728;
+    box-shadow: 
+        inset 0 0 30px rgba(0, 0, 0, 0.5),
+        0 8px 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.casino-table::before {
+    content: "BLACKJACK PAYS 3 TO 2";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 215, 0, 0.6);
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+}
+
+.player-section {
+    text-align: center;
+    padding: 10px;
+    min-height: 90px;
+}
+
+.dealer-section {
+    border-bottom: 2px dashed rgba(255, 255, 255, 0.2);
+    padding-bottom: 15px;
+}
+
+.bot-section {
+    padding: 15px 10px;
+    border-bottom: 2px dashed rgba(255, 255, 255, 0.2);
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.user-section {
+    padding-top: 15px;
+}
+
+.player-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex-wrap: wrap;
+}
+
+.player-icon {
+    font-size: 1rem;
+}
+
+.sum-badge {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-left: 5px;
+}
+
+.action-badge {
+    background: #3498db;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    margin-left: 5px;
+    animation: pulse 1s ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.result-badge {
+    margin-top: 8px;
+    padding: 6px 15px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.result-badge.win {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    animation: celebrate 0.5s ease;
+}
+
+.result-badge.lose {
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+}
+
+.result-badge.tie {
+    background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+}
+
+.result-badge.bust {
+    background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+}
+
+@keyframes celebrate {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.1) rotate(-5deg); }
+    75% { transform: scale(1.1) rotate(5deg); }
+}
+
+/* Cards */
+.cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    min-height: 65px;
+}
+
+.card {
+    width: 45px;
+    height: 65px;
+    background: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    animation: dealCard 0.3s ease;
+    position: relative;
+}
+
+@keyframes dealCard {
+    from {
+        transform: translateY(-50px) rotate(-20deg);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) rotate(0);
+        opacity: 1;
+    }
+}
+
+.card.red {
+    color: #c0392b;
+}
+
+.card.black {
+    color: #2c3e50;
+}
+
+.card .top {
+    text-align: left;
+    font-size: 0.7rem;
+}
+
+.card .bottom {
+    text-align: right;
+    transform: rotate(180deg);
+    font-size: 0.7rem;
+}
+
+.card .center {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.card.hidden-card {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    background-image: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 5px,
+            rgba(255, 255, 255, 0.1) 5px,
+            rgba(255, 255, 255, 0.1) 10px
+        );
+}
+
+.card.hidden-card::after {
+    content: "?";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+
+.game-btn {
+    padding: 10px 25px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.game-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.hit-btn {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+}
+
+.hit-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.5);
+}
+
+.stick-btn {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+}
+
+.stick-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.5);
+}
+
+.new-round-btn {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+}
+
+.new-round-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.5);
+}
+
+/* Scoreboard */
+.scoreboard {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px;
+    border-radius: 12px;
+    margin: 12px auto;
+    max-width: 500px;
+    flex-wrap: wrap;
+}
+
+.score-section h3 {
+    color: #ffd700;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+}
+
+.score-details {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.score-details span {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.score-details .win {
+    background: rgba(39, 174, 96, 0.3);
+    color: #2ecc71;
+}
+
+.score-details .loss {
+    background: rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+}
+
+.score-details .tie {
+    background: rgba(149, 165, 166, 0.3);
+    color: #95a5a6;
+}
+
+.reset-btn {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #aaa;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.75rem;
+}
+
+.reset-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* Game Log */
+.game-log {
+    max-width: 500px;
+    margin: 12px auto;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.game-log h3 {
+    color: #ffd700;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+#log-container {
+    max-height: 100px;
+    overflow-y: auto;
+    font-size: 0.75rem;
+    color: #aaa;
+}
+
+#log-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#log-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+#log-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.5);
+    border-radius: 4px;
+}
+
+.log-entry {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-entry.action {
+    color: #3498db;
+}
+
+.log-entry.result {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    border: 2px solid #ffd700;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #fff;
+}
+
+.modal-content h2 {
+    color: #ffd700;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.policy-tables {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.policy-section {
+    text-align: center;
+}
+
+.policy-section h3 {
+    color: #ddd;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+.policy-grid {
+    display: inline-block;
+    font-size: 0.6rem;
+}
+
+.policy-grid table {
+    border-collapse: collapse;
+}
+
+.policy-grid th,
+.policy-grid td {
+    width: 22px;
+    height: 18px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.policy-grid th {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.policy-grid .row-header {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.policy-grid .stick {
+    background: #27ae60;
+    color: white;
+}
+
+.policy-grid .hit {
+    background: #e74c3c;
+    color: white;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 12px 0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+}
+
+.legend-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+}
+
+.legend-color.stick {
+    background: #27ae60;
+}
+
+.legend-color.hit {
+    background: #e74c3c;
+}
+
+.policy-explanation {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.75rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Responsive - Extra small screens */
+@media (max-width: 480px) {
+    .screen {
+        padding: 5px;
+    }
+
+    .training-container {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .training-container h1 {
+        font-size: 1.3rem;
+    }
+
+    .casino-table {
+        border-radius: 50px 50px 10px 10px;
+        padding: 10px;
+        border-width: 5px;
+    }
+
+    .casino-table::before {
+        font-size: 0.5rem;
+        letter-spacing: 1px;
+    }
+
+    .card {
+        width: 38px;
+        height: 55px;
+        font-size: 0.75rem;
+        padding: 2px;
+    }
+
+    .card .top,
+    .card .bottom {
+        font-size: 0.6rem;
+    }
+
+    .card .center {
+        font-size: 1rem;
+    }
+
+    .card.hidden-card::after {
+        font-size: 1.2rem;
+    }
+
+    .cards-container {
+        min-height: 55px;
+        gap: 4px;
+    }
+
+    .player-section {
+        padding: 8px;
+        min-height: 70px;
+    }
+
+    .player-label {
+        font-size: 0.75rem;
+        gap: 4px;
+    }
+
+    .player-icon {
+        font-size: 0.9rem;
+    }
+
+    .sum-badge,
+    .action-badge {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+    }
+
+    .result-badge {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+    }
+
+    .game-btn {
+        padding: 8px 18px;
+        font-size: 0.85rem;
+    }
+
+    .controls {
+        gap: 8px;
+        margin: 10px 0;
+    }
+
+    header {
+        padding: 6px 10px;
+    }
+
+    header h1 {
+        font-size: 1rem;
+    }
+
+    .info-btn {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+
+    .scoreboard {
+        padding: 8px;
+        gap: 12px;
+    }
+
+    .score-section h3 {
+        font-size: 0.75rem;
+    }
+
+    .score-details span {
+        padding: 2px 6px;
+        font-size: 0.65rem;
+    }
+
+    .game-log {
+        padding: 8px;
+    }
+
+    .game-log h3 {
+        font-size: 0.8rem;
+    }
+
+    #log-container {
+        max-height: 80px;
+        font-size: 0.65rem;
+    }
+
+    .modal-content {
+        padding: 15px;
+    }
+
+    .modal-content h2 {
+        font-size: 1rem;
+    }
+
+    .policy-grid th,
+    .policy-grid td {
+        width: 18px;
+        height: 15px;
+        font-size: 0.5rem;
+    }
+
+    .policy-section h3 {
+        font-size: 0.75rem;
+    }
+
+    .legend {
+        gap: 15px;
+    }
+
+    .legend-item {
+        font-size: 0.7rem;
+    }
+
+    .legend-color {
+        width: 12px;
+        height: 12px;
+    }
+
+    .policy-explanation {
+        font-size: 0.65rem;
+    }
+}
+
+/* Responsive - Medium screens */
+@media (min-width: 481px) and (max-width: 768px) {
+    .casino-table {
+        border-radius: 60px 60px 12px 12px;
+    }
+
+    .card {
+        width: 42px;
+        height: 60px;
+    }
+}
