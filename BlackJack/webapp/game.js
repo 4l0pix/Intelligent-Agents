@@ -226,7 +226,7 @@ function newRound() {
     document.getElementById('new-round-btn').classList.add('hidden');
     
     // Log
-    addLog('🎴 New round started!', 'result');
+    addLog('New round started!', 'result');
     addLog(`Your hand: ${formatHand(gameState.playerHand)} (${sumHand(gameState.playerHand)})`);
     addLog(`Dealer shows: ${gameState.dealerHand[0].name}${gameState.dealerHand[0].suit}`);
     
@@ -254,7 +254,7 @@ function addLog(message, type = '') {
 function playBot() {
     const dealerShowing = gameState.dealerHand[0].value;
     
-    addLog(`🤖 Bot's turn...`, 'action');
+    addLog(`Carlos's turn...`, 'action');
     
     // Bot plays using learned policy
     while (true) {
@@ -280,12 +280,12 @@ function playBot() {
         
         if (action === STICK) {
             document.getElementById('bot-action').textContent = 'STICKS';
-            addLog(`🤖 Bot sticks at ${botSum}`);
+            addLog(`Carlos sticks at ${botSum}`);
             break;
         } else {
             document.getElementById('bot-action').textContent = 'HITS';
             gameState.botHand.push(drawCard());
-            addLog(`🤖 Bot hits, now has ${sumHand(gameState.botHand)}`);
+            addLog(`Carlos hits, now has ${sumHand(gameState.botHand)}`);
             
             // Update display
             renderHand(gameState.botHand, 'bot-cards');
@@ -299,7 +299,7 @@ function playBot() {
     
     if (isBust(gameState.botHand)) {
         document.getElementById('bot-action').textContent = 'BUST!';
-        addLog(`🤖 Bot busts with ${sumHand(gameState.botHand)}!`);
+        addLog(`Carlos busts with ${sumHand(gameState.botHand)}!`);
     }
 }
 
@@ -310,10 +310,10 @@ function playerHit() {
     renderHand(gameState.playerHand, 'player-cards');
     updateSum(gameState.playerHand, 'player-sum');
     
-    addLog(`👤 You hit, now have ${sumHand(gameState.playerHand)}`);
+    addLog(`You hit, now have ${sumHand(gameState.playerHand)}`);
     
     if (isBust(gameState.playerHand)) {
-        addLog(`👤 You bust with ${sumHand(gameState.playerHand)}!`);
+        addLog(`You bust with ${sumHand(gameState.playerHand)}!`);
         endRound();
     }
 }
@@ -321,7 +321,7 @@ function playerHit() {
 function playerStick() {
     if (!gameState.isPlayerTurn || gameState.roundOver) return;
     
-    addLog(`👤 You stick at ${sumHand(gameState.playerHand)}`);
+    addLog(`You stick at ${sumHand(gameState.playerHand)}`);
     gameState.isPlayerTurn = false;
     endRound();
 }
@@ -335,21 +335,21 @@ function endRound() {
     
     // Reveal dealer's hand
     renderHand(gameState.dealerHand, 'dealer-cards', false);
-    addLog(`🎩 Dealer reveals: ${formatHand(gameState.dealerHand)} (${sumHand(gameState.dealerHand)})`);
+    addLog(`Dealer reveals: ${formatHand(gameState.dealerHand)} (${sumHand(gameState.dealerHand)})`);
     
     // Dealer plays
     while (sumHand(gameState.dealerHand) < 17) {
         gameState.dealerHand.push(drawCard());
-        addLog(`🎩 Dealer hits, now has ${sumHand(gameState.dealerHand)}`);
+        addLog(`Dealer hits, now has ${sumHand(gameState.dealerHand)}`);
     }
     
     renderHand(gameState.dealerHand, 'dealer-cards');
     updateSum(gameState.dealerHand, 'dealer-sum');
     
     if (isBust(gameState.dealerHand)) {
-        addLog(`🎩 Dealer busts with ${sumHand(gameState.dealerHand)}!`);
+        addLog(`Dealer busts with ${sumHand(gameState.dealerHand)}!`);
     } else {
-        addLog(`🎩 Dealer sticks at ${sumHand(gameState.dealerHand)}`);
+        addLog(`Dealer sticks at ${sumHand(gameState.dealerHand)}`);
     }
     
     // Determine results
@@ -418,7 +418,7 @@ function endRound() {
     botResultEl.className = `result-badge ${botClass}`;
     
     // Log results
-    addLog(`📊 Results - You: ${playerResult}, Bot: ${botResult}`, 'result');
+    addLog(`Results - You: ${playerResult}, Bot: ${botResult}`, 'result');
     
     // Update scoreboard
     updateScoreboard();
@@ -445,5 +445,5 @@ function resetScores() {
         bot: { wins: 0, losses: 0, ties: 0 }
     };
     updateScoreboard();
-    addLog('📊 Scores reset!', 'result');
+    addLog('Scores reset!', 'result');
 }
