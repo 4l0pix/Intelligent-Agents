@@ -21,7 +21,7 @@ let scores = {
 };
 
 // Card suits and display
-const SUITS = ['S', 'H', 'D', 'C'];
+const SUITS = ['♠', '♥', '♦', '♣'];
 const CARD_NAMES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
 // ===== TRAINING FUNCTIONS =====
@@ -132,7 +132,7 @@ function drawCard() {
     const value = CARD_VALUES[valueIndex];
     const name = CARD_NAMES[valueIndex];
     const suit = SUITS[Math.floor(Math.random() * 4)];
-    const isRed = suit === 'H' || suit === 'D';
+    const isRed = suit === '♥' || suit === '♦';
     
     return { value, name, suit, isRed };
 }

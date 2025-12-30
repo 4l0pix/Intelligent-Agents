@@ -5,7 +5,7 @@ class PokerEngine {
     constructor() {
         this.SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
         this.RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
-        this.SUIT_SYMBOLS = { hearts: 'H', diamonds: 'D', clubs: 'C', spades: 'S' };
+        this.SUIT_SYMBOLS = { hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' };
     }
 
     // Create a fresh deck
