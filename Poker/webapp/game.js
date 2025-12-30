@@ -1,55 +1,84 @@
-// Game Controller for Kuhn Poker
+// Texas Hold'em Game Controller
 
-class KuhnPokerGame {
+class TexasHoldemGame {
     constructor() {
-        this.cfr = null;
-        this.iterations = 10000;
+        this.engine = new PokerEngine();
+        this.ai = null;
+        this.difficulty = 'medium';
+        this.startingChips = 100;
         
         // Game state
-        this.playerChips = 50;
-        this.botChips = 50;
+        this.playerChips = 100;
+        this.botChips = 100;
         this.pot = 0;
-        this.playerCard = null;
-        this.botCard = null;
-        this.history = '';
+        this.playerHole = [];
+        this.botHole = [];
+        this.community = [];
+        this.deck = [];
+        
+        // Betting state
+        this.currentBet = 0;
+        this.playerBet = 0;
+        this.botBet = 0;
         this.isPlayerTurn = true;
-        this.gameActive = false;
+        this.gamePhase = 'idle'; // idle, preflop, flop, turn, river, showdown
+        this.lastAction = { player: '', bot: '' };
+        
+        // Blinds
+        this.smallBlind = 1;
+        this.bigBlind = 2;
+        this.dealerIsPlayer = true; // Player has button
         
         // Stats
         this.playerWins = 0;
         this.botWins = 0;
         this.totalHands = 0;
-        this.gameLog = [];
-        
-        // Card display
-        this.cardSymbols = { 0: 'J', 1: 'Q', 2: 'K' };
-        this.cardClasses = { 0: 'jack', 1: 'queen', 2: 'king' };
         
         this.initializeEventListeners();
     }
-    
+
     initializeEventListeners() {
-        // Iterations slider
-        const iterSlider = document.getElementById('iterations-slider');
-        const iterValue = document.getElementById('iterations-value');
-        iterSlider.addEventListener('input', () => {
-            this.iterations = parseInt(iterSlider.value);
-            iterValue.textContent = this.iterations.toLocaleString();
+        // Difficulty buttons
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                this.difficulty = btn.dataset.difficulty;
+            });
         });
-        
-        // Start training
-        document.getElementById('start-btn').addEventListener('click', () => this.startTraining());
-        
-        // Game actions
-        document.getElementById('check-btn').addEventListener('click', () => this.playerAction(0));
-        document.getElementById('bet-btn').addEventListener('click', () => this.playerAction(1));
-        document.getElementById('fold-btn').addEventListener('click', () => this.playerAction(0));
-        document.getElementById('call-btn').addEventListener('click', () => this.playerAction(1));
+
+        // Chips slider
+        const chipsSlider = document.getElementById('chips-slider');
+        const chipsValue = document.getElementById('chips-value');
+        chipsSlider.addEventListener('input', () => {
+            this.startingChips = parseInt(chipsSlider.value);
+            chipsValue.textContent = this.startingChips;
+        });
+
+        // Start button
+        document.getElementById('start-btn').addEventListener('click', () => this.startGame());
+
+        // Action buttons
+        document.getElementById('fold-btn').addEventListener('click', () => this.playerAction('fold'));
+        document.getElementById('check-btn').addEventListener('click', () => this.playerAction('check'));
+        document.getElementById('call-btn').addEventListener('click', () => this.playerAction('call'));
+        document.getElementById('bet-btn').addEventListener('click', () => this.showBetControls('bet'));
+        document.getElementById('raise-btn').addEventListener('click', () => this.showBetControls('raise'));
+        document.getElementById('allin-btn').addEventListener('click', () => this.playerAction('allin'));
         document.getElementById('deal-btn').addEventListener('click', () => this.dealNewHand());
-        
+
+        // Bet controls
+        const betSlider = document.getElementById('bet-slider');
+        const betAmount = document.getElementById('bet-amount');
+        betSlider.addEventListener('input', () => {
+            betAmount.textContent = betSlider.value;
+        });
+        document.getElementById('confirm-bet').addEventListener('click', () => this.confirmBet());
+        document.getElementById('cancel-bet').addEventListener('click', () => this.hideBetControls());
+
         // Reset
         document.getElementById('reset-btn').addEventListener('click', () => this.resetGame());
-        
+
         // Info modal
         document.getElementById('info-btn').addEventListener('click', () => this.showInfoModal());
         document.querySelector('.close-btn').addEventListener('click', () => this.hideInfoModal());
@@ -57,428 +86,486 @@ class KuhnPokerGame {
             if (e.target.id === 'info-modal') this.hideInfoModal();
         });
     }
-    
-    async startTraining() {
-        const startBtn = document.getElementById('start-btn');
-        startBtn.disabled = true;
-        startBtn.textContent = 'Training...';
+
+    startGame() {
+        this.ai = new PokerAI(this.difficulty);
+        this.playerChips = this.startingChips;
+        this.botChips = this.startingChips;
         
-        const progressBar = document.getElementById('progress-fill');
-        const progressText = document.getElementById('progress-text');
-        document.getElementById('progress-container').classList.remove('hidden');
-        
-        this.cfr = new CFRTrainer();
-        
-        try {
-            await this.cfr.train(this.iterations, async (progress, current, total) => {
-                progressBar.style.width = `${progress}%`;
-                progressText.textContent = `Training: ${current.toLocaleString()} / ${total.toLocaleString()} iterations`;
-            });
-            
-            progressText.textContent = 'Training complete!';
-            
-            setTimeout(() => {
-                this.showGameScreen();
-            }, 500);
-            
-        } catch (error) {
-            console.error('Training error:', error);
-            progressText.textContent = 'Training failed!';
-            startBtn.disabled = false;
-            startBtn.textContent = 'Train Bot';
-        }
-    }
-    
-    showGameScreen() {
         document.getElementById('training-screen').classList.add('hidden');
         document.getElementById('game-screen').classList.remove('hidden');
+        document.getElementById('difficulty-display').textContent = 
+            this.difficulty.charAt(0).toUpperCase() + this.difficulty.slice(1);
+        
         this.updateDisplay();
     }
-    
+
     dealNewHand() {
         if (this.playerChips <= 0 || this.botChips <= 0) {
-            this.addLogEntry('Game over! Reset to play again.', 'action');
+            this.setStatus('Game over! Reset to play again.');
             return;
         }
-        
-        // Shuffle and deal
-        const deck = [0, 1, 2];
-        for (let i = deck.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [deck[i], deck[j]] = [deck[j], deck[i]];
-        }
-        
-        this.playerCard = deck[0];
-        this.botCard = deck[1];
-        this.history = '';
-        this.pot = 2; // Both ante 1
-        this.playerChips -= 1;
-        this.botChips -= 1;
-        this.gameActive = true;
-        
-        // Randomly decide who acts first
-        this.isPlayerTurn = Math.random() < 0.5;
-        
-        this.updateDisplay();
-        
-        const cardName = this.cardSymbols[this.playerCard];
-        this.addLogEntry(`New hand dealt. You have ${cardName}.`, 'action');
-        this.setStatus(`You have ${cardName}. ${this.isPlayerTurn ? 'Your turn.' : 'Bot is thinking...'}`);
-        
-        if (!this.isPlayerTurn) {
-            setTimeout(() => this.botMove(), 1000);
-        }
-    }
-    
-    playerAction(action) {
-        if (!this.gameActive || !this.isPlayerTurn) return;
-        
-        const actionChar = action === 0 ? 'p' : 'b';
-        this.history += actionChar;
-        
-        if (action === 1) {
-            // Bet or call
-            this.playerChips -= 1;
-            this.pot += 1;
-            this.addLogEntry(this.history.length <= 1 || this.history[this.history.length - 2] !== 'b' 
-                ? 'You bet 1.' : 'You call.', 'action');
+
+        // Reset hand state
+        this.pot = 0;
+        this.currentBet = 0;
+        this.playerBet = 0;
+        this.botBet = 0;
+        this.community = [];
+        this.lastAction = { player: '', bot: '' };
+
+        // Alternate dealer
+        this.dealerIsPlayer = !this.dealerIsPlayer;
+
+        // Create and shuffle deck
+        this.deck = this.engine.shuffleDeck(this.engine.createDeck());
+
+        // Deal hole cards
+        this.playerHole = [this.deck.pop(), this.deck.pop()];
+        this.botHole = [this.deck.pop(), this.deck.pop()];
+
+        // Post blinds
+        if (this.dealerIsPlayer) {
+            // Player is dealer (small blind), bot is big blind
+            this.postBlind(true, this.smallBlind);
+            this.postBlind(false, this.bigBlind);
+            this.isPlayerTurn = true; // Dealer acts first preflop in heads-up
         } else {
-            // Check or fold
-            if (this.history.length > 1 && this.history[this.history.length - 2] === 'b') {
-                this.addLogEntry('You fold.', 'action');
-            } else {
-                this.addLogEntry('You check.', 'action');
-            }
+            // Bot is dealer (small blind), player is big blind
+            this.postBlind(false, this.smallBlind);
+            this.postBlind(true, this.bigBlind);
+            this.isPlayerTurn = false;
         }
-        
-        this.isPlayerTurn = false;
-        this.updateDisplay();
-        
-        // Check if game is over
-        if (this.checkGameEnd()) {
-            return;
-        }
-        
-        // Bot's turn
-        this.setStatus('Bot is thinking...');
-        setTimeout(() => this.botMove(), 1000);
-    }
-    
-    botMove() {
-        if (!this.gameActive) return;
-        
-        const action = this.cfr.getAction(this.botCard, this.history, this.history.length % 2 === 0);
-        const actionChar = action === 0 ? 'p' : 'b';
-        this.history += actionChar;
-        
-        if (action === 1) {
-            this.botChips -= 1;
-            this.pot += 1;
-            this.addLogEntry(this.history.length <= 1 || this.history[this.history.length - 2] !== 'b' 
-                ? 'Bot bets 1.' : 'Bot calls.', 'action');
-        } else {
-            if (this.history.length > 1 && this.history[this.history.length - 2] === 'b') {
-                this.addLogEntry('Bot folds.', 'action');
-            } else {
-                this.addLogEntry('Bot checks.', 'action');
-            }
-        }
-        
-        this.isPlayerTurn = true;
-        this.updateDisplay();
-        
-        // Check if game is over
-        if (this.checkGameEnd()) {
-            return;
-        }
-        
-        this.setStatus('Your turn.');
-    }
-    
-    checkGameEnd() {
-        const result = this.getResult();
-        if (result === null) return false;
-        
-        this.gameActive = false;
+
+        this.currentBet = this.bigBlind;
+        this.gamePhase = 'preflop';
         this.totalHands++;
+
+        this.updateDisplay();
+        this.setStatus(this.isPlayerTurn ? 'Your turn' : 'Bot is thinking...');
+
+        if (!this.isPlayerTurn) {
+            setTimeout(() => this.botTurn(), 1000);
+        }
+    }
+
+    postBlind(isPlayer, amount) {
+        const actualAmount = Math.min(amount, isPlayer ? this.playerChips : this.botChips);
         
-        // Reveal bot's card
-        document.getElementById('opponent-card').textContent = this.cardSymbols[this.botCard];
-        document.getElementById('opponent-card').className = `card ${this.cardClasses[this.botCard]}`;
+        if (isPlayer) {
+            this.playerChips -= actualAmount;
+            this.playerBet = actualAmount;
+        } else {
+            this.botChips -= actualAmount;
+            this.botBet = actualAmount;
+        }
+        this.pot += actualAmount;
+    }
+
+    playerAction(action) {
+        if (!this.isPlayerTurn || this.gamePhase === 'idle' || this.gamePhase === 'showdown') return;
+
+        const toCall = this.currentBet - this.playerBet;
+
+        switch (action) {
+            case 'fold':
+                this.lastAction.player = 'FOLD';
+                this.endHand(false);
+                return;
+
+            case 'check':
+                if (toCall > 0) return; // Can't check if there's a bet
+                this.lastAction.player = 'CHECK';
+                break;
+
+            case 'call':
+                const callAmount = Math.min(toCall, this.playerChips);
+                this.playerChips -= callAmount;
+                this.playerBet += callAmount;
+                this.pot += callAmount;
+                this.lastAction.player = `CALL ${callAmount}`;
+                break;
+
+            case 'allin':
+                const allinAmount = this.playerChips;
+                this.pot += allinAmount;
+                this.playerBet += allinAmount;
+                this.playerChips = 0;
+                this.currentBet = Math.max(this.currentBet, this.playerBet);
+                this.lastAction.player = `ALL IN ${allinAmount}`;
+                break;
+        }
+
+        this.updateDisplay();
+        this.afterPlayerAction();
+    }
+
+    showBetControls(type) {
+        this.pendingBetType = type;
+        const betControls = document.getElementById('bet-controls');
+        const betSlider = document.getElementById('bet-slider');
         
-        let message;
-        let logClass;
+        const minBet = type === 'bet' ? this.bigBlind : this.currentBet * 2;
+        const maxBet = this.playerChips;
         
-        if (result > 0) {
+        betSlider.min = Math.min(minBet, maxBet);
+        betSlider.max = maxBet;
+        betSlider.value = Math.min(minBet * 2, maxBet);
+        document.getElementById('bet-amount').textContent = betSlider.value;
+        
+        betControls.classList.remove('hidden');
+    }
+
+    hideBetControls() {
+        document.getElementById('bet-controls').classList.add('hidden');
+    }
+
+    confirmBet() {
+        const amount = parseInt(document.getElementById('bet-slider').value);
+        
+        this.playerChips -= amount;
+        this.playerBet += amount;
+        this.pot += amount;
+        this.currentBet = this.playerBet;
+        
+        this.lastAction.player = `${this.pendingBetType.toUpperCase()} ${amount}`;
+        
+        this.hideBetControls();
+        this.updateDisplay();
+        this.afterPlayerAction();
+    }
+
+    afterPlayerAction() {
+        // Check if betting round is complete
+        if (this.isBettingComplete()) {
+            this.advancePhase();
+        } else {
+            this.isPlayerTurn = false;
+            this.setStatus('Bot is thinking...');
+            setTimeout(() => this.botTurn(), 1000);
+        }
+    }
+
+    botTurn() {
+        if (this.isPlayerTurn || this.gamePhase === 'idle' || this.gamePhase === 'showdown') return;
+
+        const toCall = this.currentBet - this.botBet;
+        const isPreflop = this.gamePhase === 'preflop';
+        
+        const decision = this.ai.makeDecision(
+            this.botHole,
+            this.community,
+            this.pot,
+            toCall,
+            this.playerChips,
+            this.botChips,
+            isPreflop
+        );
+
+        switch (decision.action) {
+            case 'fold':
+                this.lastAction.bot = 'FOLD';
+                this.endHand(true);
+                return;
+
+            case 'check':
+                this.lastAction.bot = 'CHECK';
+                break;
+
+            case 'call':
+                const callAmount = Math.min(toCall, this.botChips);
+                this.botChips -= callAmount;
+                this.botBet += callAmount;
+                this.pot += callAmount;
+                this.lastAction.bot = `CALL ${callAmount}`;
+                break;
+
+            case 'bet':
+            case 'raise':
+                const betAmount = Math.min(decision.amount, this.botChips);
+                this.botChips -= betAmount;
+                this.botBet += betAmount;
+                this.pot += betAmount;
+                this.currentBet = this.botBet;
+                this.lastAction.bot = `${decision.action.toUpperCase()} ${betAmount}`;
+                break;
+        }
+
+        this.updateDisplay();
+
+        // Check if betting round is complete
+        if (this.isBettingComplete()) {
+            setTimeout(() => this.advancePhase(), 800);
+        } else {
+            this.isPlayerTurn = true;
+            this.setStatus('Your turn');
+            this.updateActionButtons();
+        }
+    }
+
+    isBettingComplete() {
+        // Betting is complete when both players have acted and bets are equal
+        // Or when a player is all-in
+        if (this.playerChips === 0 || this.botChips === 0) return true;
+        
+        const bothActed = this.lastAction.player !== '' && this.lastAction.bot !== '';
+        const betsEqual = this.playerBet === this.botBet;
+        
+        // Special case: if someone just bet/raised, other player needs to act
+        if (this.lastAction.player.includes('BET') || this.lastAction.player.includes('RAISE') ||
+            this.lastAction.player.includes('ALL IN')) {
+            return this.lastAction.bot !== '' && betsEqual;
+        }
+        if (this.lastAction.bot.includes('BET') || this.lastAction.bot.includes('RAISE')) {
+            return this.lastAction.player !== '' && betsEqual;
+        }
+        
+        return bothActed && betsEqual;
+    }
+
+    advancePhase() {
+        // Reset betting for new round
+        this.playerBet = 0;
+        this.botBet = 0;
+        this.currentBet = 0;
+        this.lastAction = { player: '', bot: '' };
+
+        switch (this.gamePhase) {
+            case 'preflop':
+                // Deal flop
+                this.deck.pop(); // Burn
+                this.community.push(this.deck.pop(), this.deck.pop(), this.deck.pop());
+                this.gamePhase = 'flop';
+                this.setStatus('Flop dealt');
+                break;
+
+            case 'flop':
+                // Deal turn
+                this.deck.pop(); // Burn
+                this.community.push(this.deck.pop());
+                this.gamePhase = 'turn';
+                this.setStatus('Turn dealt');
+                break;
+
+            case 'turn':
+                // Deal river
+                this.deck.pop(); // Burn
+                this.community.push(this.deck.pop());
+                this.gamePhase = 'river';
+                this.setStatus('River dealt');
+                break;
+
+            case 'river':
+                // Showdown
+                this.showdown();
+                return;
+        }
+
+        this.updateDisplay();
+
+        // In heads-up, button acts first postflop
+        this.isPlayerTurn = this.dealerIsPlayer;
+        
+        setTimeout(() => {
+            if (!this.isPlayerTurn) {
+                this.botTurn();
+            } else {
+                this.setStatus('Your turn');
+                this.updateActionButtons();
+            }
+        }, 1000);
+    }
+
+    showdown() {
+        this.gamePhase = 'showdown';
+        
+        // Reveal bot cards
+        this.updateDisplay(true);
+
+        const playerHand = this.engine.bestHand([...this.playerHole, ...this.community]);
+        const botHand = this.engine.bestHand([...this.botHole, ...this.community]);
+        
+        const result = this.engine.compareHands(playerHand, botHand);
+
+        setTimeout(() => {
+            if (result > 0) {
+                this.playerWins++;
+                this.playerChips += this.pot;
+                this.setStatus(`You win with ${playerHand.name}! +${this.pot} chips`);
+            } else if (result < 0) {
+                this.botWins++;
+                this.botChips += this.pot;
+                this.setStatus(`Bot wins with ${botHand.name}. -${this.pot - this.playerBet} chips`);
+            } else {
+                // Split pot
+                const half = Math.floor(this.pot / 2);
+                this.playerChips += half;
+                this.botChips += this.pot - half;
+                this.setStatus(`Split pot! Both have ${playerHand.name}`);
+            }
+
+            this.pot = 0;
+            this.updateDisplay(true);
+        }, 1500);
+    }
+
+    endHand(playerWins) {
+        this.gamePhase = 'showdown';
+        
+        if (playerWins) {
             this.playerWins++;
             this.playerChips += this.pot;
-            message = `You win ${this.pot} chips! (${this.cardSymbols[this.playerCard]} vs ${this.cardSymbols[this.botCard]})`;
-            logClass = 'win';
-        } else if (result < 0) {
+            this.setStatus(`Bot folds! You win ${this.pot} chips`);
+        } else {
             this.botWins++;
             this.botChips += this.pot;
-            message = `Bot wins ${this.pot} chips. (${this.cardSymbols[this.playerCard]} vs ${this.cardSymbols[this.botCard]})`;
-            logClass = 'lose';
-        } else {
-            // Split (shouldn't happen in Kuhn)
-            this.playerChips += this.pot / 2;
-            this.botChips += this.pot / 2;
-            message = 'Split pot.';
-            logClass = 'action';
+            this.setStatus(`You fold. Bot wins ${this.pot} chips`);
         }
-        
+
         this.pot = 0;
-        this.addLogEntry(message, logClass);
-        this.setStatus(message + ' Deal a new hand.');
         this.updateDisplay();
-        
-        return true;
     }
-    
-    getResult() {
-        // Determine winner based on history
-        // Returns positive for player win, negative for bot win, null if not terminal
-        
-        if (this.history.length < 2) return null;
-        
-        const last = this.history[this.history.length - 1];
-        const secondLast = this.history[this.history.length - 2];
-        
-        // Fold
-        if (last === 'p' && secondLast === 'b') {
-            // Whoever folded loses
-            const folderIsPlayer = (this.history.length % 2 === 1) === this.isPlayerTurn;
-            // Actually, we need to track who made which move
-            // In our setup: if history length is odd and it was player's turn structure
-            // Let's simplify: last action is fold, previous was bet
-            // The folder is whoever made the last 'p' after 'b'
-            
-            // Count moves to determine who folded
-            // If player moved first: odd positions are player's
-            const playerMovedFirst = this.history.length > 0;
-            const folderIndex = this.history.length - 1;
-            
-            // This is getting complex - let's use a simpler approach
-            // Check the last action and who just acted
-            if (!this.isPlayerTurn) {
-                // Player just folded
-                return -1;
-            } else {
-                // Bot just folded
-                return 1;
-            }
-        }
-        
-        // Showdown
-        if (this.history === 'pp' || this.history === 'bb' || this.history === 'pbb' || this.history === 'pbp') {
-            if (this.history === 'pbp') {
-                // Fold after pass-bet
-                if (!this.isPlayerTurn) {
-                    return -1; // Player folded
-                } else {
-                    return 1; // Bot folded
-                }
-            }
-            
-            // Actual showdown
-            if (this.playerCard > this.botCard) {
-                return 1;
-            } else {
-                return -1;
-            }
-        }
-        
-        return null;
-    }
-    
-    updateDisplay() {
+
+    updateDisplay(showBotCards = false) {
         // Update chips
         document.getElementById('player-chips').textContent = this.playerChips;
-        document.getElementById('opponent-chips').textContent = this.botChips;
+        document.getElementById('bot-chips').textContent = this.botChips;
         document.getElementById('pot-value').textContent = this.pot;
-        
-        // Update cards
-        if (this.playerCard !== null) {
-            document.getElementById('player-card').textContent = this.cardSymbols[this.playerCard];
-            document.getElementById('player-card').className = `card ${this.cardClasses[this.playerCard]}`;
-        } else {
-            document.getElementById('player-card').textContent = '-';
-            document.getElementById('player-card').className = 'card';
-        }
-        
-        if (!this.gameActive && this.botCard !== null) {
-            document.getElementById('opponent-card').textContent = this.cardSymbols[this.botCard];
-            document.getElementById('opponent-card').className = `card ${this.cardClasses[this.botCard]}`;
-        } else {
-            document.getElementById('opponent-card').textContent = '?';
-            document.getElementById('opponent-card').className = 'card back';
-        }
-        
-        // Update action buttons
-        const checkBtn = document.getElementById('check-btn');
-        const betBtn = document.getElementById('bet-btn');
-        const foldBtn = document.getElementById('fold-btn');
-        const callBtn = document.getElementById('call-btn');
-        const dealBtn = document.getElementById('deal-btn');
-        
-        if (!this.gameActive) {
-            checkBtn.classList.add('hidden');
-            betBtn.classList.add('hidden');
-            foldBtn.classList.add('hidden');
-            callBtn.classList.add('hidden');
-            dealBtn.disabled = false;
-        } else if (this.isPlayerTurn) {
-            // Check what actions are available
-            const facingBet = this.history.length > 0 && this.history[this.history.length - 1] === 'b';
-            
-            if (facingBet) {
-                checkBtn.classList.add('hidden');
-                betBtn.classList.add('hidden');
-                foldBtn.classList.remove('hidden');
-                callBtn.classList.remove('hidden');
-                foldBtn.disabled = false;
-                callBtn.disabled = false;
-            } else {
-                checkBtn.classList.remove('hidden');
-                betBtn.classList.remove('hidden');
-                foldBtn.classList.add('hidden');
-                callBtn.classList.add('hidden');
-                checkBtn.disabled = false;
-                betBtn.disabled = false;
-            }
-            dealBtn.disabled = true;
-        } else {
-            checkBtn.disabled = true;
-            betBtn.disabled = true;
-            foldBtn.disabled = true;
-            callBtn.disabled = true;
-            dealBtn.disabled = true;
-        }
-        
+
         // Update scores
         document.getElementById('player-wins').textContent = this.playerWins;
         document.getElementById('bot-wins').textContent = this.botWins;
         document.getElementById('total-hands').textContent = this.totalHands;
+
+        // Update player cards
+        this.renderCard('player-card-1', this.playerHole[0]);
+        this.renderCard('player-card-2', this.playerHole[1]);
+
+        // Update bot cards
+        if (showBotCards || this.gamePhase === 'showdown') {
+            this.renderCard('bot-card-1', this.botHole[0]);
+            this.renderCard('bot-card-2', this.botHole[1]);
+        } else {
+            this.renderCardBack('bot-card-1');
+            this.renderCardBack('bot-card-2');
+        }
+
+        // Update community cards
+        for (let i = 1; i <= 5; i++) {
+            const card = this.community[i - 1];
+            this.renderCard(`comm-${i}`, card);
+        }
+
+        // Update actions
+        document.getElementById('player-action').textContent = this.lastAction.player;
+        document.getElementById('bot-action').textContent = this.lastAction.bot;
+
+        this.updateActionButtons();
     }
-    
+
+    renderCard(elementId, card) {
+        const el = document.getElementById(elementId);
+        if (!card) {
+            el.className = 'card empty';
+            el.innerHTML = '';
+            return;
+        }
+
+        const suitClass = card.suit;
+        const symbol = this.engine.SUIT_SYMBOLS[card.suit];
+        
+        el.className = `card ${suitClass}`;
+        el.innerHTML = `
+            <span class="rank">${card.rank}</span>
+            <span class="suit">${symbol}</span>
+            <span class="rank-bottom">${card.rank}</span>
+        `;
+    }
+
+    renderCardBack(elementId) {
+        const el = document.getElementById(elementId);
+        if (this.gamePhase === 'idle') {
+            el.className = 'card empty';
+            el.innerHTML = '';
+        } else {
+            el.className = 'card back';
+            el.innerHTML = '';
+        }
+    }
+
+    updateActionButtons() {
+        const toCall = this.currentBet - this.playerBet;
+        const canAct = this.isPlayerTurn && this.gamePhase !== 'idle' && this.gamePhase !== 'showdown';
+        
+        const foldBtn = document.getElementById('fold-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const callBtn = document.getElementById('call-btn');
+        const betBtn = document.getElementById('bet-btn');
+        const raiseBtn = document.getElementById('raise-btn');
+        const allinBtn = document.getElementById('allin-btn');
+        const dealBtn = document.getElementById('deal-btn');
+
+        // Reset all
+        foldBtn.disabled = true;
+        checkBtn.disabled = true;
+        callBtn.disabled = true;
+        betBtn.disabled = true;
+        raiseBtn.disabled = true;
+        allinBtn.disabled = true;
+        
+        checkBtn.classList.add('hidden');
+        callBtn.classList.add('hidden');
+        betBtn.classList.add('hidden');
+        raiseBtn.classList.add('hidden');
+
+        if (!canAct) {
+            dealBtn.disabled = this.gamePhase !== 'idle' && this.gamePhase !== 'showdown';
+            return;
+        }
+
+        dealBtn.disabled = true;
+        foldBtn.disabled = false;
+        allinBtn.disabled = this.playerChips <= 0;
+
+        if (toCall === 0) {
+            checkBtn.classList.remove('hidden');
+            checkBtn.disabled = false;
+            betBtn.classList.remove('hidden');
+            betBtn.disabled = this.playerChips <= 0;
+        } else {
+            callBtn.classList.remove('hidden');
+            callBtn.disabled = false;
+            callBtn.textContent = `Call ${Math.min(toCall, this.playerChips)}`;
+            raiseBtn.classList.remove('hidden');
+            raiseBtn.disabled = this.playerChips <= toCall;
+        }
+    }
+
     setStatus(message) {
         document.getElementById('game-status').textContent = message;
     }
-    
-    addLogEntry(message, type = '') {
-        this.gameLog.unshift({ message, type, time: new Date() });
-        if (this.gameLog.length > 50) this.gameLog.pop();
-        this.renderLog();
-    }
-    
-    renderLog() {
-        const container = document.getElementById('log-container');
-        container.innerHTML = this.gameLog.map(entry => 
-            `<div class="log-entry ${entry.type}">${entry.message}</div>`
-        ).join('');
-    }
-    
+
     resetGame() {
-        this.playerChips = 50;
-        this.botChips = 50;
-        this.pot = 0;
-        this.playerCard = null;
-        this.botCard = null;
-        this.history = '';
-        this.gameActive = false;
+        this.playerChips = this.startingChips;
+        this.botChips = this.startingChips;
         this.playerWins = 0;
         this.botWins = 0;
         this.totalHands = 0;
-        this.gameLog = [];
-        
+        this.gamePhase = 'idle';
+        this.pot = 0;
+        this.playerHole = [];
+        this.botHole = [];
+        this.community = [];
+        this.lastAction = { player: '', bot: '' };
+
         this.updateDisplay();
-        this.renderLog();
         this.setStatus('Click "Deal New Hand" to start');
     }
-    
+
     showInfoModal() {
         document.getElementById('info-modal').classList.remove('hidden');
-        document.getElementById('trained-iterations').textContent = this.iterations.toLocaleString();
-        
-        const strategies = this.cfr.getAllStrategies();
-        
-        // Render Player 1 strategies
-        const p1Container = document.getElementById('strategy-p1');
-        p1Container.innerHTML = '';
-        
-        for (const card of ['J', 'Q', 'K']) {
-            const strat = strategies.player1[card];
-            const row = document.createElement('div');
-            row.className = 'strategy-row';
-            
-            const cardClass = card === 'J' ? 'jack' : card === 'Q' ? 'queen' : 'king';
-            
-            row.innerHTML = `
-                <span class="strategy-card ${cardClass}">${card}</span>
-                <div class="strategy-actions">
-                    <div class="strategy-action">
-                        <span>Check:</span>
-                        <span>${(strat.initial[0] * 100).toFixed(1)}%</span>
-                    </div>
-                    <div class="strategy-action">
-                        <span>Bet:</span>
-                        <span>${(strat.initial[1] * 100).toFixed(1)}%</span>
-                    </div>
-                    ${strat.afterBet ? `
-                    <div class="strategy-action">
-                        <span>Fold (vs bet):</span>
-                        <span>${(strat.afterBet[0] * 100).toFixed(1)}%</span>
-                    </div>
-                    <div class="strategy-action">
-                        <span>Call (vs bet):</span>
-                        <span>${(strat.afterBet[1] * 100).toFixed(1)}%</span>
-                    </div>
-                    ` : ''}
-                </div>
-            `;
-            
-            p1Container.appendChild(row);
-        }
-        
-        // Render Player 2 strategies
-        const p2Container = document.getElementById('strategy-p2');
-        p2Container.innerHTML = '';
-        
-        for (const card of ['J', 'Q', 'K']) {
-            const strat = strategies.player2[card];
-            const row = document.createElement('div');
-            row.className = 'strategy-row';
-            
-            const cardClass = card === 'J' ? 'jack' : card === 'Q' ? 'queen' : 'king';
-            
-            row.innerHTML = `
-                <span class="strategy-card ${cardClass}">${card}</span>
-                <div class="strategy-actions">
-                    <div class="strategy-action">
-                        <span>Check (vs check):</span>
-                        <span>${(strat.afterPass[0] * 100).toFixed(1)}%</span>
-                    </div>
-                    <div class="strategy-action">
-                        <span>Bet (vs check):</span>
-                        <span>${(strat.afterPass[1] * 100).toFixed(1)}%</span>
-                    </div>
-                    ${strat.afterBet ? `
-                    <div class="strategy-action">
-                        <span>Fold (vs bet):</span>
-                        <span>${(strat.afterBet[0] * 100).toFixed(1)}%</span>
-                    </div>
-                    <div class="strategy-action">
-                        <span>Call (vs bet):</span>
-                        <span>${(strat.afterBet[1] * 100).toFixed(1)}%</span>
-                    </div>
-                    ` : ''}
-                </div>
-            `;
-            
-            p2Container.appendChild(row);
-        }
     }
-    
+
     hideInfoModal() {
         document.getElementById('info-modal').classList.add('hidden');
     }
@@ -486,5 +573,5 @@ class KuhnPokerGame {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    window.game = new KuhnPokerGame();
+    window.game = new TexasHoldemGame();
 });

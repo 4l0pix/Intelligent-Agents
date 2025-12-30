@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roulette - Why Betting Systems Fail</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ROULETTE</h1>
+            <p class="subtitle">The Mathematics of Inevitable Loss</p>
+        </header>
+
+        <!-- Strategy Selection Screen -->
+        <div id="strategy-screen" class="screen active">
+            <div class="carlos-message">
+                <div class="carlos-avatar">🎰</div>
+                <div class="message-bubble">
+                    <p><strong>Carlos here.</strong> I'm going to show you why every roulette betting system fails. Pick a strategy and watch it lose money over time.</p>
+                    <p class="hint">The house edge is built into the wheel itself - no pattern of bets can overcome it.</p>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <h3>House Edge</h3>
+                <div class="edge-comparison">
+                    <div class="edge-item">
+                        <span class="edge-label">European (1 zero)</span>
+                        <span class="edge-value">2.70%</span>
+                    </div>
+                    <div class="edge-item active">
+                        <span class="edge-label">American (2 zeros)</span>
+                        <span class="edge-value">5.26%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="strategy-grid">
+                <button class="strategy-card" data-strategy="martingale">
+                    <h3>Martingale</h3>
+                    <p>Double bet after each loss</p>
+                    <span class="strategy-verdict">Catastrophic losses inevitable</span>
+                </button>
+
+                <button class="strategy-card" data-strategy="reverse-martingale">
+                    <h3>Reverse Martingale</h3>
+                    <p>Double bet after each win</p>
+                    <span class="strategy-verdict">Gives back all winnings</span>
+                </button>
+
+                <button class="strategy-card" data-strategy="dalembert">
+                    <h3>D'Alembert</h3>
+                    <p>Add 1 after loss, subtract 1 after win</p>
+                    <span class="strategy-verdict">Slow bleed to zero</span>
+                </button>
+
+                <button class="strategy-card" data-strategy="fibonacci">
+                    <h3>Fibonacci</h3>
+                    <p>Follow the Fibonacci sequence</p>
+                    <span class="strategy-verdict">Elegant but doomed</span>
+                </button>
+
+                <button class="strategy-card" data-strategy="flat">
+                    <h3>Flat Betting</h3>
+                    <p>Same bet every spin</p>
+                    <span class="strategy-verdict">Honest and still loses</span>
+                </button>
+
+                <button class="strategy-card" data-strategy="james-bond">
+                    <h3>James Bond</h3>
+                    <p>Cover 2/3 of the table</p>
+                    <span class="strategy-verdict">Looks clever, isn't</span>
+                </button>
+            </div>
+
+            <div class="mode-selection">
+                <button id="play-mode-btn" class="mode-btn">Play Yourself</button>
+                <button id="simulate-mode-btn" class="mode-btn primary">Watch Simulation</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="bankroll-display">
+                    <span class="label">Bankroll</span>
+                    <span id="bankroll" class="value">$1000</span>
+                </div>
+                <div class="strategy-display">
+                    <span class="label">Strategy</span>
+                    <span id="current-strategy" class="value">Martingale</span>
+                </div>
+                <div class="stats-display">
+                    <span class="label">Spins</span>
+                    <span id="spin-count" class="value">0</span>
+                </div>
+            </div>
+
+            <!-- Roulette Wheel -->
+            <div class="wheel-container">
+                <div id="wheel" class="roulette-wheel">
+                    <div class="wheel-center">
+                        <span id="result-number">-</span>
+                    </div>
+                </div>
+                <div id="ball" class="ball"></div>
+            </div>
+
+            <!-- Betting Table -->
+            <div class="betting-table">
+                <div class="table-grid">
+                    <div class="zero-section">
+                        <button class="bet-cell zero" data-bet="0">0</button>
+                        <button class="bet-cell zero" data-bet="00">00</button>
+                    </div>
+                    <div class="number-grid">
+                        <!-- Numbers 1-36 -->
+                    </div>
+                    <div class="outside-bets">
+                        <button class="bet-cell outside" data-bet="1-18">1-18</button>
+                        <button class="bet-cell outside" data-bet="even">EVEN</button>
+                        <button class="bet-cell outside red" data-bet="red">RED</button>
+                        <button class="bet-cell outside black" data-bet="black">BLACK</button>
+                        <button class="bet-cell outside" data-bet="odd">ODD</button>
+                        <button class="bet-cell outside" data-bet="19-36">19-36</button>
+                    </div>
+                    <div class="dozen-bets">
+                        <button class="bet-cell dozen" data-bet="1st12">1st 12</button>
+                        <button class="bet-cell dozen" data-bet="2nd12">2nd 12</button>
+                        <button class="bet-cell dozen" data-bet="3rd12">3rd 12</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Bet Display -->
+            <div class="bet-display">
+                <div class="current-bet">
+                    <span class="label">Current Bet</span>
+                    <span id="current-bet-amount" class="value">$10</span>
+                    <span id="current-bet-type" class="bet-type">on RED</span>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="game-controls">
+                <button id="spin-btn" class="spin-btn">SPIN</button>
+                <button id="auto-spin-btn" class="auto-btn">Auto (100 spins)</button>
+                <button id="reset-btn" class="reset-btn">Reset</button>
+            </div>
+
+            <!-- Carlos Commentary -->
+            <div class="carlos-commentary">
+                <div class="carlos-avatar small">🎰</div>
+                <p id="carlos-comment">Click SPIN to start. I'll explain what's happening.</p>
+            </div>
+
+            <!-- Results Chart -->
+            <div class="chart-container">
+                <canvas id="bankroll-chart"></canvas>
+            </div>
+
+            <button id="back-btn" class="back-btn">Back to Strategies</button>
+        </div>
+
+        <!-- Simulation Screen -->
+        <div id="simulation-screen" class="screen">
+            <h2>Strategy Comparison</h2>
+            <p class="sim-description">Simulating 1000 spins for each strategy. Starting bankroll: $1000</p>
+
+            <div class="simulation-results">
+                <div class="sim-card" data-strategy="martingale">
+                    <h3>Martingale</h3>
+                    <div class="sim-bankroll">$<span>1000</span></div>
+                    <div class="sim-bar"><div class="sim-fill"></div></div>
+                    <div class="sim-stats">
+                        <span class="busts">Busts: <strong>0</strong></span>
+                        <span class="max-bet">Max Bet: <strong>$0</strong></span>
+                    </div>
+                </div>
+
+                <div class="sim-card" data-strategy="reverse-martingale">
+                    <h3>Reverse Martingale</h3>
+                    <div class="sim-bankroll">$<span>1000</span></div>
+                    <div class="sim-bar"><div class="sim-fill"></div></div>
+                    <div class="sim-stats">
+                        <span class="busts">Busts: <strong>0</strong></span>
+                        <span class="max-bet">Max Bet: <strong>$0</strong></span>
+                    </div>
+                </div>
+
+                <div class="sim-card" data-strategy="dalembert">
+                    <h3>D'Alembert</h3>
+                    <div class="sim-bankroll">$<span>1000</span></div>
+                    <div class="sim-bar"><div class="sim-fill"></div></div>
+                    <div class="sim-stats">
+                        <span class="busts">Busts: <strong>0</strong></span>
+                        <span class="max-bet">Max Bet: <strong>$0</strong></span>
+                    </div>
+                </div>
+
+                <div class="sim-card" data-strategy="fibonacci">
+                    <h3>Fibonacci</h3>
+                    <div class="sim-bankroll">$<span>1000</span></div>
+                    <div class="sim-bar"><div class="sim-fill"></div></div>
+                    <div class="sim-stats">
+                        <span class="busts">Busts: <strong>0</strong></span>
+                        <span class="max-bet">Max Bet: <strong>$0</strong></span>
+                    </div>
+                </div>
+
+                <div class="sim-card" data-strategy="flat">
+                    <h3>Flat Betting</h3>
+                    <div class="sim-bankroll">$<span>1000</span></div>
+                    <div class="sim-bar"><div class="sim-fill"></div></div>
+                    <div class="sim-stats">
+                        <span class="busts">Busts: <strong>0</strong></span>
+                        <span class="max-bet">Max Bet: <strong>$0</strong></span>
+                    </div>
+                </div>
+
+                <div class="sim-card" data-strategy="james-bond">
+                    <h3>James Bond</h3>
+                    <div class="sim-bankroll">$<span>1000</span></div>
+                    <div class="sim-bar"><div class="sim-fill"></div></div>
+                    <div class="sim-stats">
+                        <span class="busts">Busts: <strong>0</strong></span>
+                        <span class="max-bet">Max Bet: <strong>$0</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sim-controls">
+                <button id="run-sim-btn" class="primary-btn">Run Simulation</button>
+                <button id="run-many-btn" class="secondary-btn">Run 100 Simulations</button>
+            </div>
+
+            <div class="carlos-commentary">
+                <div class="carlos-avatar small">🎰</div>
+                <p id="sim-comment">Click to run the simulation. Watch how all strategies converge to the same fate.</p>
+            </div>
+
+            <!-- Multi-simulation results -->
+            <div id="multi-sim-results" class="multi-results hidden">
+                <h3>100 Simulation Average Results</h3>
+                <div class="multi-grid"></div>
+            </div>
+
+            <button id="sim-back-btn" class="back-btn">Back to Strategies</button>
+        </div>
+
+        <footer>
+            <p class="warning">Roulette is a game of pure chance. The house always wins in the long run.</p>
+        </footer>
+    </div>
+
+    <script src="roulette.js"></script>
+    <script src="strategies.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

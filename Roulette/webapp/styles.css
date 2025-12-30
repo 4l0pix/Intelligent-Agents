@@ -1,0 +1,780 @@
+:root {
+    --bg-dark: #0a0a0a;
+    --bg-card: #111;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --green-accent: #4ade80;
+    --green-glow: rgba(74, 222, 128, 0.3);
+    --red-accent: #ef4444;
+    --red-glow: rgba(239, 68, 68, 0.3);
+    --gold-accent: #fbbf24;
+    --text-primary: #fff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --roulette-green: #0d5c2e;
+    --roulette-red: #c41e3a;
+    --roulette-black: #1a1a1a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: var(--green-accent);
+    text-shadow: 0 0 30px var(--green-glow);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* Screens */
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* Carlos Message */
+.carlos-message {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.carlos-avatar {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.carlos-avatar.small {
+    font-size: 1.5rem;
+}
+
+.message-bubble p {
+    margin-bottom: 0.5rem;
+}
+
+.message-bubble .hint {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Info Panel */
+.info-panel {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-panel h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.edge-comparison {
+    display: flex;
+    gap: 2rem;
+}
+
+.edge-item {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    opacity: 0.5;
+}
+
+.edge-item.active {
+    opacity: 1;
+}
+
+.edge-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.edge-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--red-accent);
+}
+
+/* Strategy Grid */
+.strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.strategy-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.strategy-card:hover {
+    border-color: var(--green-accent);
+    box-shadow: 0 0 20px var(--green-glow);
+    transform: translateY(-2px);
+}
+
+.strategy-card.selected {
+    border-color: var(--green-accent);
+    background: rgba(74, 222, 128, 0.1);
+}
+
+.strategy-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.strategy-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.strategy-verdict {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--red-accent);
+    font-weight: 500;
+}
+
+/* Mode Selection */
+.mode-selection {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.mode-btn {
+    padding: 0.75rem 2rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-btn:hover {
+    border-color: var(--green-accent);
+}
+
+.mode-btn.primary {
+    background: var(--green-accent);
+    color: var(--bg-dark);
+    border-color: var(--green-accent);
+}
+
+.mode-btn.primary:hover {
+    box-shadow: 0 0 20px var(--green-glow);
+}
+
+/* Game Screen */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.bankroll-display,
+.strategy-display,
+.stats-display {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+}
+
+.bankroll-display .label,
+.strategy-display .label,
+.stats-display .label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.bankroll-display .value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--green-accent);
+}
+
+.strategy-display .value,
+.stats-display .value {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Roulette Wheel */
+.wheel-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 2rem auto;
+}
+
+.roulette-wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(
+        #0d5c2e 0deg 9.73deg,
+        #c41e3a 9.73deg 19.46deg,
+        #1a1a1a 19.46deg 29.19deg,
+        #c41e3a 29.19deg 38.92deg,
+        #1a1a1a 38.92deg 48.65deg,
+        #c41e3a 48.65deg 58.38deg,
+        #1a1a1a 58.38deg 68.11deg,
+        #c41e3a 68.11deg 77.84deg,
+        #1a1a1a 77.84deg 87.57deg,
+        #c41e3a 87.57deg 97.3deg,
+        #1a1a1a 97.3deg 107.03deg,
+        #c41e3a 107.03deg 116.76deg,
+        #1a1a1a 116.76deg 126.49deg,
+        #c41e3a 126.49deg 136.22deg,
+        #1a1a1a 136.22deg 145.95deg,
+        #c41e3a 145.95deg 155.68deg,
+        #1a1a1a 155.68deg 165.41deg,
+        #c41e3a 165.41deg 175.14deg,
+        #0d5c2e 175.14deg 184.87deg,
+        #c41e3a 184.87deg 194.6deg,
+        #1a1a1a 194.6deg 204.33deg,
+        #c41e3a 204.33deg 214.06deg,
+        #1a1a1a 214.06deg 223.79deg,
+        #c41e3a 223.79deg 233.52deg,
+        #1a1a1a 233.52deg 243.25deg,
+        #c41e3a 243.25deg 252.98deg,
+        #1a1a1a 252.98deg 262.71deg,
+        #c41e3a 262.71deg 272.44deg,
+        #1a1a1a 272.44deg 282.17deg,
+        #c41e3a 282.17deg 291.9deg,
+        #1a1a1a 291.9deg 301.63deg,
+        #c41e3a 301.63deg 311.36deg,
+        #1a1a1a 311.36deg 321.09deg,
+        #c41e3a 321.09deg 330.82deg,
+        #1a1a1a 330.82deg 340.55deg,
+        #c41e3a 340.55deg 350.28deg,
+        #1a1a1a 350.28deg 360deg
+    );
+    border: 8px solid #333;
+    box-shadow: 
+        inset 0 0 20px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(0, 0, 0, 0.5);
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+
+.wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(145deg, #222, #111);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #444;
+    z-index: 2;
+}
+
+#result-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.ball {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 30% 30%, #fff, #ccc);
+    border-radius: 50%;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.ball.visible {
+    opacity: 1;
+}
+
+/* Betting Table */
+.betting-table {
+    background: var(--roulette-green);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 3px solid #0a4a24;
+}
+
+.table-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.zero-section {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2px;
+}
+
+.outside-bets {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.dozen-bets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.bet-cell {
+    padding: 0.5rem 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.bet-cell:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.bet-cell.zero {
+    background: var(--roulette-green);
+    border-color: #fff;
+}
+
+.bet-cell.red {
+    background: var(--roulette-red);
+}
+
+.bet-cell.black {
+    background: var(--roulette-black);
+}
+
+.bet-cell.number-red {
+    background: var(--roulette-red);
+}
+
+.bet-cell.number-black {
+    background: var(--roulette-black);
+}
+
+.bet-cell.selected {
+    box-shadow: 0 0 10px var(--gold-accent);
+    border-color: var(--gold-accent);
+}
+
+/* Bet Display */
+.bet-display {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.current-bet .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+}
+
+.current-bet .value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--gold-accent);
+    margin: 0 0.5rem;
+}
+
+.bet-type {
+    color: var(--text-secondary);
+}
+
+/* Game Controls */
+.game-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.spin-btn {
+    padding: 1rem 3rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--green-accent), #22c55e);
+    border: none;
+    border-radius: 8px;
+    color: var(--bg-dark);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.spin-btn:hover:not(:disabled) {
+    box-shadow: 0 0 30px var(--green-glow);
+    transform: scale(1.05);
+}
+
+.spin-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.auto-btn,
+.reset-btn {
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auto-btn:hover,
+.reset-btn:hover {
+    border-color: var(--green-accent);
+}
+
+/* Carlos Commentary */
+.carlos-commentary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.carlos-commentary p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Chart */
+.chart-container {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    height: 200px;
+}
+
+#bankroll-chart {
+    width: 100%;
+    height: 100%;
+}
+
+/* Back Button */
+.back-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    border-color: var(--green-accent);
+    color: var(--text-primary);
+}
+
+/* Simulation Screen */
+.sim-description {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.simulation-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.sim-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.sim-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.sim-bankroll {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.sim-bankroll.positive {
+    color: var(--green-accent);
+}
+
+.sim-bankroll.negative {
+    color: var(--red-accent);
+}
+
+.sim-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.sim-fill {
+    height: 100%;
+    background: var(--green-accent);
+    border-radius: 4px;
+    width: 50%;
+    transition: all 0.5s ease;
+}
+
+.sim-fill.bust {
+    background: var(--red-accent);
+}
+
+.sim-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.sim-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.primary-btn {
+    padding: 0.75rem 2rem;
+    background: var(--green-accent);
+    border: none;
+    border-radius: 8px;
+    color: var(--bg-dark);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.primary-btn:hover {
+    box-shadow: 0 0 20px var(--green-glow);
+}
+
+.secondary-btn {
+    padding: 0.75rem 2rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+    border-color: var(--green-accent);
+}
+
+/* Multi-simulation results */
+.multi-results {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.multi-results.hidden {
+    display: none;
+}
+
+.multi-results h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.multi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.multi-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.multi-item h4 {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.multi-item .value {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.multi-item .value.positive {
+    color: var(--green-accent);
+}
+
+.multi-item .value.negative {
+    color: var(--red-accent);
+}
+
+.multi-item .bust-rate {
+    font-size: 0.75rem;
+    color: var(--red-accent);
+    margin-top: 0.25rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.warning {
+    color: var(--red-accent);
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .strategy-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .mode-selection {
+        flex-direction: column;
+    }
+    
+    .game-header {
+        flex-direction: column;
+    }
+    
+    .outside-bets {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .wheel-container {
+        width: 150px;
+        height: 150px;
+    }
+}

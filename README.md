@@ -32,7 +32,8 @@ Experience reinforcement learning in action through our web-based games:
 |------|-----------|-------------|
 | [**Blackjack**](BlackJack/webapp/index.html) | Monte Carlo Exploring Starts | Play against an AI that learned optimal strategy through 500,000+ simulated hands |
 | [**Bandit Slots**](BanditProblem/webapp/index.html) | ε-Greedy & Softmax | Watch "Carlos" learn which slot machine pays best—spoiler: he always figures it out |
-| [**Kuhn Poker**](Poker/webapp/index.html) | Counterfactual Regret Minimization | Face a bot that learned to bluff through self-play, converging to Nash Equilibrium |
+| [**Texas Hold'em**](Poker/webapp/index.html) | Monte Carlo Hand Evaluation | Challenge Carlos in heads-up poker—he estimates hand strength through simulation |
+| [**Roulette**](Roulette/webapp/index.html) | Monte Carlo Simulation | Test betting systems like Martingale—watch them all fail against the house edge |
 
 ➡️ **[Launch Games](index.html)**
 
