@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bandit Slots - Carlos Learning</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Training Screen -->
+    <div id="training-screen" class="screen">
+        <div class="glass-container training-container">
+            <h1>BANDIT SLOTS</h1>
+            <p class="subtitle">Watch Carlos learn the best slot machine</p>
+            
+            <div class="training-form">
+                <div class="form-group">
+                    <label>Number of Slot Machines</label>
+                    <div class="button-group">
+                        <button class="option-btn machine-btn" data-count="3">3</button>
+                        <button class="option-btn machine-btn selected" data-count="5">5</button>
+                        <button class="option-btn machine-btn" data-count="7">7</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Carlos's Strategy</label>
+                    <div class="button-group">
+                        <button class="option-btn strategy-btn selected" data-strategy="epsilon-greedy">ε-Greedy</button>
+                        <button class="option-btn strategy-btn" data-strategy="softmax">Softmax</button>
+                    </div>
+                </div>
+
+                <div class="form-group" id="epsilon-group">
+                    <label>Exploration Rate (ε): <span id="epsilon-value">0.10</span></label>
+                    <input type="range" id="epsilon-slider" min="0.01" max="0.5" step="0.01" value="0.1">
+                </div>
+
+                <div class="form-group hidden" id="temp-group">
+                    <label>Temperature (τ): <span id="temp-value">0.50</span></label>
+                    <input type="range" id="temp-slider" min="0.1" max="2" step="0.1" value="0.5">
+                </div>
+
+                <div class="form-group">
+                    <label>Training Rounds: <span id="rounds-value">1,000</span></label>
+                    <input type="range" id="rounds-slider" min="100" max="5000" step="100" value="1000">
+                </div>
+
+                <button id="start-btn" class="primary-btn">Train Carlos</button>
+
+                <div id="progress-container" class="hidden">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <p id="progress-text">Training... 0%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+        <!-- Header -->
+        <header class="glass-container">
+            <h1>BANDIT SLOTS</h1>
+            <button id="info-btn" class="info-btn">Carlos Stats</button>
+        </header>
+
+        <!-- Slot Machines -->
+        <div class="machines-area">
+            <div id="machines-container" class="machines-container"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="mode-toggle glass-container">
+                <button class="mode-btn active" data-mode="player">You Play</button>
+                <button class="mode-btn" data-mode="ai">Carlos Plays</button>
+            </div>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="scoreboard glass-container">
+            <div class="score-item">
+                <span class="score-label">Your Balance</span>
+                <span id="player-balance" class="score-value">0.00</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">Carlos Balance</span>
+                <span id="ai-balance" class="score-value">0.00</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">Total Plays</span>
+                <span id="total-plays" class="score-value">0</span>
+            </div>
+            <button id="reset-btn" class="reset-btn">Reset</button>
+        </div>
+
+        <!-- Game Log -->
+        <div class="game-log glass-container">
+            <h3>Game Log</h3>
+            <div id="log-container"></div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="modal hidden">
+        <div class="modal-content glass-container">
+            <span class="close-btn">&times;</span>
+            <h2>CARLOS'S LEARNED STRATEGY</h2>
+            
+            <div class="strategy-info">
+                <p><strong>Algorithm:</strong> <span id="strategy-type">ε-Greedy</span></p>
+                <p><strong>Parameter:</strong> <span id="strategy-param">ε = 0.1</span></p>
+            </div>
+
+            <h3>Estimated Q-Values</h3>
+            <div id="machine-stats" class="machine-stats"></div>
+
+            <h3>Training Progress</h3>
+            <div class="chart-container">
+                <canvas id="reward-chart"></canvas>
+            </div>
+
+            <p class="explanation">
+                Carlos learns which slot machine has the highest expected payout by balancing 
+                <strong>exploration</strong> (trying different machines) and <strong>exploitation</strong> 
+                (playing the best known machine). Higher Q-values indicate machines Carlos believes are more rewarding.
+            </p>
+        </div>
+    </div>
+
+    <script src="bandit.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

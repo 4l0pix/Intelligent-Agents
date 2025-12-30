@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Agents - AI Learning Games</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --green-dark: #0a1f0a;
+            --green-medium: #1a3a1a;
+            --green-light: #2d5a2d;
+            --green-accent: #4ade80;
+            --green-glow: rgba(74, 222, 128, 0.3);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #e8f5e9;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-medium) 50%, var(--green-dark) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--green-accent);
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 300;
+            margin-bottom: 50px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+
+        .game-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px 25px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-card:hover {
+            border-color: var(--green-accent);
+            box-shadow: 0 0 30px var(--green-glow);
+            transform: translateY(-5px);
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .game-title {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: var(--green-accent);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .game-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .game-algorithm {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            width: 100%;
+        }
+
+        .game-algorithm strong {
+            color: var(--green-accent);
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .play-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: var(--green-accent);
+            border: none;
+            border-radius: 20px;
+            color: var(--green-dark);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-card:hover .play-btn {
+            box-shadow: 0 0 15px var(--green-glow);
+        }
+
+        footer {
+            margin-top: 50px;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 300;
+        }
+
+        footer a {
+            color: var(--green-accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+                letter-spacing: 2px;
+            }
+
+            .subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 30px;
+            }
+
+            .game-card {
+                padding: 25px 20px;
+            }
+
+            .game-icon {
+                font-size: 3rem;
+            }
+
+            .game-title {
+                font-size: 1.2rem;
+            }
+
+            .game-description {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>INTELLIGENT AGENTS</h1>
+        <p class="subtitle">Explore reinforcement learning through interactive games</p>
+
+        <div class="games-grid">
+            <a href="BlackJack/webapp/index.html" class="game-card">
+                <div class="game-icon">🃏</div>
+                <h2 class="game-title">BLACKJACK</h2>
+                <p class="game-description">
+                    Play against Carlos, a trained player that has learned the optimal blackjack strategy 
+                    through hundreds of thousands of simulated games.
+                </p>
+                <div class="game-algorithm">
+                    <strong>ALGORITHM</strong>
+                    Monte Carlo Exploring Starts
+                </div>
+                <span class="play-btn">Play Now</span>
+            </a>
+
+            <a href="BanditProblem/webapp/index.html" class="game-card">
+                <div class="game-icon">🎰</div>
+                <h2 class="game-title">BANDIT SLOTS</h2>
+                <p class="game-description">
+                    Watch Carlos learn which slot machine has the highest payout by balancing 
+                    exploration and exploitation strategies.
+                </p>
+                <div class="game-algorithm">
+                    <strong>ALGORITHM</strong>
+                    ε-Greedy & Softmax
+                </div>
+                <span class="play-btn">Play Now</span>
+            </a>
+        </div>
+
+        <footer>
+            <p>Reinforcement Learning Demonstrations</p>
+        </footer>
+    </div>
+</body>
+</html>
