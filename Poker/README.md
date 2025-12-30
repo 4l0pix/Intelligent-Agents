@@ -100,16 +100,16 @@ Hands are ranked by this hierarchy (high to low):
 
 | Rank | Hand | Example | Combinations | Probability |
 |------|------|---------|--------------|-------------|
-| 1 | Royal Flush | A♠ K♠ Q♠ J♠ 10♠ | 4 | 0.00015% |
-| 2 | Straight Flush | 9♦ 8♦ 7♦ 6♦ 5♦ | 36 | 0.00139% |
-| 3 | Four of a Kind | K♣ K♠ K♦ K♥ 2♣ | 624 | 0.024% |
-| 4 | Full House | Q♠ Q♥ Q♦ 7♣ 7♠ | 3,744 | 0.144% |
-| 5 | Flush | A♥ J♥ 8♥ 4♥ 2♥ | 5,108 | 0.197% |
-| 6 | Straight | 10♣ 9♠ 8♦ 7♥ 6♣ | 10,200 | 0.393% |
-| 7 | Three of a Kind | 8♠ 8♦ 8♣ K♥ 3♠ | 54,912 | 2.11% |
-| 8 | Two Pair | J♠ J♥ 5♦ 5♣ A♠ | 123,552 | 4.75% |
-| 9 | One Pair | 10♠ 10♣ A♦ 7♥ 4♣ | 1,098,240 | 42.3% |
-| 10 | High Card | A♠ J♦ 8♣ 5♥ 2♠ | 1,302,540 | 50.1% |
+| 1 | Royal Flush | As Ks Qs Js 10s | 4 | 0.00015% |
+| 2 | Straight Flush | 9d 8d 7d 6d 5d | 36 | 0.00139% |
+| 3 | Four of a Kind | Kc Ks Kd Kh 2c | 624 | 0.024% |
+| 4 | Full House | Qs Qh Qd 7c 7s | 3,744 | 0.144% |
+| 5 | Flush | Ah Jh 8h 4h 2h | 5,108 | 0.197% |
+| 6 | Straight | 10c 9s 8d 7h 6c | 10,200 | 0.393% |
+| 7 | Three of a Kind | 8s 8d 8c Kh 3s | 54,912 | 2.11% |
+| 8 | Two Pair | Js Jh 5d 5c As | 123,552 | 4.75% |
+| 9 | One Pair | 10s 10c Ad 7h 4c | 1,098,240 | 42.3% |
+| 10 | High Card | As Jd 8c 5h 2s | 1,302,540 | 50.1% |
 
 **Total**: 2,598,960 possible 5-card hands
 
@@ -126,10 +126,10 @@ Each combination is evaluated and the best is kept.
 When hand types match, compare kickers (remaining cards) in order:
 
 ```
-Hand A: A♠ A♥ K♦ 7♣ 2♠  (Pair of Aces, K-7-2 kickers)
-Hand B: A♦ A♣ K♠ 6♥ 5♦  (Pair of Aces, K-6-5 kickers)
+Hand A: As Ah Kd 7c 2s  (Pair of Aces, K-7-2 kickers)
+Hand B: Ad Ac Ks 6h 5d  (Pair of Aces, K-6-5 kickers)
 
-Compare: A=A, A=A, K=K, 7>6 → Hand A wins
+Compare: A=A, A=A, K=K, 7>6 -> Hand A wins
 ```
 
 ---

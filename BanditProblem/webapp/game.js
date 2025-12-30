@@ -20,7 +20,7 @@ class SlotMachineGame {
         this.gameLog = [];
         
         // Slot symbols
-        this.symbols = ['🍒', '🍋', '🍊', '🍇', '💎', '7️⃣', '🍀'];
+        this.symbols = ['*', 'X', 'O', '#', '$', '7', '+'];
         
         this.initializeEventListeners();
     }
@@ -222,15 +222,15 @@ class SlotMachineGame {
         // Final symbol based on reward
         let finalSymbol;
         if (reward > 1.5) {
-            finalSymbol = '💎';
+            finalSymbol = '$';
         } else if (reward > 0.5) {
-            finalSymbol = '7️⃣';
+            finalSymbol = '7';
         } else if (reward > 0) {
-            finalSymbol = '🍀';
+            finalSymbol = '+';
         } else if (reward > -0.5) {
-            finalSymbol = '🍊';
+            finalSymbol = 'O';
         } else {
-            finalSymbol = '🍋';
+            finalSymbol = 'X';
         }
         
         reelDisplay.textContent = finalSymbol;
