@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuhn Poker - CFR Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Training Screen -->
+    <div id="training-screen" class="screen">
+        <div class="glass-container training-container">
+            <h1>KUHN POKER</h1>
+            <p class="subtitle">Watch the bot learn to bluff using CFR</p>
+            
+            <div class="game-explanation">
+                <h3>How Kuhn Poker Works</h3>
+                <ul>
+                    <li>3 cards: Jack (J), Queen (Q), King (K)</li>
+                    <li>Each player gets 1 card</li>
+                    <li>Ante: 1 chip each</li>
+                    <li>You can <strong>Check</strong> or <strong>Bet</strong> (1 chip)</li>
+                    <li>Opponent can <strong>Fold</strong> or <strong>Call</strong></li>
+                    <li>Highest card wins at showdown</li>
+                </ul>
+            </div>
+            
+            <div class="training-form">
+                <div class="form-group">
+                    <label>Training Iterations: <span id="iterations-value">10,000</span></label>
+                    <input type="range" id="iterations-slider" min="1000" max="100000" step="1000" value="10000">
+                </div>
+
+                <button id="start-btn" class="primary-btn">Train Bot</button>
+
+                <div id="progress-container" class="hidden">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <p id="progress-text">Training... 0%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+        <!-- Header -->
+        <header class="glass-container">
+            <h1>KUHN POKER</h1>
+            <button id="info-btn" class="info-btn">Bot Strategy</button>
+        </header>
+
+        <!-- Game Area -->
+        <div class="game-area">
+            <!-- Opponent -->
+            <div class="player-section opponent">
+                <div class="player-label">Bot</div>
+                <div class="player-card">
+                    <div id="opponent-card" class="card back">?</div>
+                </div>
+                <div class="player-chips">
+                    <span class="chip-label">Chips:</span>
+                    <span id="opponent-chips" class="chip-value">50</span>
+                </div>
+            </div>
+
+            <!-- Pot -->
+            <div class="pot-area glass-container">
+                <span class="pot-label">POT</span>
+                <span id="pot-value" class="pot-value">0</span>
+            </div>
+
+            <!-- Player -->
+            <div class="player-section player">
+                <div class="player-chips">
+                    <span class="chip-label">Chips:</span>
+                    <span id="player-chips" class="chip-value">50</span>
+                </div>
+                <div class="player-card">
+                    <div id="player-card" class="card">-</div>
+                </div>
+                <div class="player-label">You</div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-area">
+            <div id="action-buttons" class="action-buttons">
+                <button id="check-btn" class="action-btn">Check</button>
+                <button id="bet-btn" class="action-btn primary">Bet 1</button>
+                <button id="fold-btn" class="action-btn danger hidden">Fold</button>
+                <button id="call-btn" class="action-btn primary hidden">Call 1</button>
+            </div>
+            <button id="deal-btn" class="action-btn deal">Deal New Hand</button>
+        </div>
+
+        <!-- Game Status -->
+        <div class="status-area glass-container">
+            <p id="game-status">Click "Deal New Hand" to start</p>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="scoreboard glass-container">
+            <div class="score-item">
+                <span class="score-label">Your Wins</span>
+                <span id="player-wins" class="score-value">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">Bot Wins</span>
+                <span id="bot-wins" class="score-value">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">Hands</span>
+                <span id="total-hands" class="score-value">0</span>
+            </div>
+            <button id="reset-btn" class="reset-btn">Reset</button>
+        </div>
+
+        <!-- Game Log -->
+        <div class="game-log glass-container">
+            <h3>Game Log</h3>
+            <div id="log-container"></div>
+        </div>
+    </div>
+
+    <!-- Strategy Modal -->
+    <div id="info-modal" class="modal hidden">
+        <div class="modal-content glass-container">
+            <span class="close-btn">&times;</span>
+            <h2>BOT'S LEARNED STRATEGY</h2>
+            
+            <div class="strategy-info">
+                <p><strong>Algorithm:</strong> Counterfactual Regret Minimization (CFR)</p>
+                <p><strong>Training:</strong> <span id="trained-iterations">10,000</span> iterations</p>
+            </div>
+
+            <h3>Strategy by Card (as Player 1)</h3>
+            <div id="strategy-p1" class="strategy-table"></div>
+
+            <h3>Strategy by Card (as Player 2)</h3>
+            <div id="strategy-p2" class="strategy-table"></div>
+
+            <p class="explanation">
+                CFR learns by simulating millions of hands against itself. 
+                It tracks "regret" for each decision—how much better an alternative action would have been.
+                Over time, it converges to a <strong>Nash Equilibrium</strong>: a strategy that cannot be exploited.
+                Notice how the bot learns to <strong>bluff with Jack</strong> and <strong>value bet with King</strong>.
+            </p>
+        </div>
+    </div>
+
+    <script src="cfr.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
