@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuhn Poker - CFR Bot</title>
+    <title>Texas Hold'em - AI Poker Bot</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
@@ -11,35 +11,36 @@
     <!-- Training Screen -->
     <div id="training-screen" class="screen">
         <div class="glass-container training-container">
-            <h1>KUHN POKER</h1>
-            <p class="subtitle">Watch the bot learn to bluff using CFR</p>
+            <h1>TEXAS HOLD'EM</h1>
+            <p class="subtitle">Play heads-up poker against an AI opponent</p>
             
             <div class="game-explanation">
-                <h3>How Kuhn Poker Works</h3>
+                <h3>How It Works</h3>
                 <ul>
-                    <li>3 cards: Jack (J), Queen (Q), King (K)</li>
-                    <li>Each player gets 1 card</li>
-                    <li>Ante: 1 chip each</li>
-                    <li>You can <strong>Check</strong> or <strong>Bet</strong> (1 chip)</li>
-                    <li>Opponent can <strong>Fold</strong> or <strong>Call</strong></li>
-                    <li>Highest card wins at showdown</li>
+                    <li>Standard Texas Hold'em rules</li>
+                    <li>Heads-up (1v1) format</li>
+                    <li>Bot uses <strong>Monte Carlo simulation</strong> to estimate hand strength</li>
+                    <li>Strategic decisions based on pot odds and position</li>
+                    <li>Blinds: Small 1 / Big 2</li>
                 </ul>
             </div>
             
             <div class="training-form">
                 <div class="form-group">
-                    <label>Training Iterations: <span id="iterations-value">10,000</span></label>
-                    <input type="range" id="iterations-slider" min="1000" max="100000" step="1000" value="10000">
-                </div>
-
-                <button id="start-btn" class="primary-btn">Train Bot</button>
-
-                <div id="progress-container" class="hidden">
-                    <div class="progress-bar">
-                        <div id="progress-fill" class="progress-fill"></div>
+                    <label>Bot Difficulty</label>
+                    <div class="button-group">
+                        <button class="option-btn difficulty-btn" data-difficulty="easy">Easy</button>
+                        <button class="option-btn difficulty-btn selected" data-difficulty="medium">Medium</button>
+                        <button class="option-btn difficulty-btn" data-difficulty="hard">Hard</button>
                     </div>
-                    <p id="progress-text">Training... 0%</p>
                 </div>
+
+                <div class="form-group">
+                    <label>Starting Chips: <span id="chips-value">100</span></label>
+                    <input type="range" id="chips-slider" min="50" max="500" step="50" value="100">
+                </div>
+
+                <button id="start-btn" class="primary-btn">Start Game</button>
             </div>
         </div>
     </div>
@@ -48,55 +49,74 @@
     <div id="game-screen" class="screen hidden">
         <!-- Header -->
         <header class="glass-container">
-            <h1>KUHN POKER</h1>
-            <button id="info-btn" class="info-btn">Bot Strategy</button>
+            <h1>TEXAS HOLD'EM</h1>
+            <button id="info-btn" class="info-btn">Bot Info</button>
         </header>
 
-        <!-- Game Area -->
-        <div class="game-area">
-            <!-- Opponent -->
-            <div class="player-section opponent">
-                <div class="player-label">Bot</div>
-                <div class="player-card">
-                    <div id="opponent-card" class="card back">?</div>
+        <!-- Game Table -->
+        <div class="poker-table">
+            <!-- Bot Area -->
+            <div class="player-area bot-area">
+                <div class="player-info">
+                    <span class="player-name">Bot</span>
+                    <span id="bot-chips" class="chip-count">100</span>
                 </div>
-                <div class="player-chips">
-                    <span class="chip-label">Chips:</span>
-                    <span id="opponent-chips" class="chip-value">50</span>
+                <div class="hole-cards">
+                    <div id="bot-card-1" class="card back"></div>
+                    <div id="bot-card-2" class="card back"></div>
+                </div>
+                <div id="bot-action" class="player-action"></div>
+            </div>
+
+            <!-- Community Cards -->
+            <div class="community-area">
+                <div class="community-cards">
+                    <div id="comm-1" class="card empty"></div>
+                    <div id="comm-2" class="card empty"></div>
+                    <div id="comm-3" class="card empty"></div>
+                    <div id="comm-4" class="card empty"></div>
+                    <div id="comm-5" class="card empty"></div>
+                </div>
+                <div class="pot-display glass-container">
+                    <span class="pot-label">POT</span>
+                    <span id="pot-value">0</span>
                 </div>
             </div>
 
-            <!-- Pot -->
-            <div class="pot-area glass-container">
-                <span class="pot-label">POT</span>
-                <span id="pot-value" class="pot-value">0</span>
-            </div>
-
-            <!-- Player -->
-            <div class="player-section player">
-                <div class="player-chips">
-                    <span class="chip-label">Chips:</span>
-                    <span id="player-chips" class="chip-value">50</span>
+            <!-- Player Area -->
+            <div class="player-area player-area-bottom">
+                <div id="player-action" class="player-action"></div>
+                <div class="hole-cards">
+                    <div id="player-card-1" class="card empty"></div>
+                    <div id="player-card-2" class="card empty"></div>
                 </div>
-                <div class="player-card">
-                    <div id="player-card" class="card">-</div>
+                <div class="player-info">
+                    <span class="player-name">You</span>
+                    <span id="player-chips" class="chip-count">100</span>
                 </div>
-                <div class="player-label">You</div>
             </div>
         </div>
 
         <!-- Actions -->
         <div class="actions-area">
             <div id="action-buttons" class="action-buttons">
-                <button id="check-btn" class="action-btn">Check</button>
-                <button id="bet-btn" class="action-btn primary">Bet 1</button>
-                <button id="fold-btn" class="action-btn danger hidden">Fold</button>
-                <button id="call-btn" class="action-btn primary hidden">Call 1</button>
+                <button id="fold-btn" class="action-btn danger" disabled>Fold</button>
+                <button id="check-btn" class="action-btn" disabled>Check</button>
+                <button id="call-btn" class="action-btn" disabled>Call</button>
+                <button id="bet-btn" class="action-btn primary" disabled>Bet</button>
+                <button id="raise-btn" class="action-btn primary" disabled>Raise</button>
+                <button id="allin-btn" class="action-btn allin" disabled>All In</button>
+            </div>
+            <div id="bet-controls" class="bet-controls hidden">
+                <input type="range" id="bet-slider" min="2" max="100" value="10">
+                <span id="bet-amount">10</span>
+                <button id="confirm-bet" class="action-btn primary">Confirm</button>
+                <button id="cancel-bet" class="action-btn">Cancel</button>
             </div>
             <button id="deal-btn" class="action-btn deal">Deal New Hand</button>
         </div>
 
-        <!-- Game Status -->
+        <!-- Status -->
         <div class="status-area glass-container">
             <p id="game-status">Click "Deal New Hand" to start</p>
         </div>
@@ -117,41 +137,49 @@
             </div>
             <button id="reset-btn" class="reset-btn">Reset</button>
         </div>
-
-        <!-- Game Log -->
-        <div class="game-log glass-container">
-            <h3>Game Log</h3>
-            <div id="log-container"></div>
-        </div>
     </div>
 
-    <!-- Strategy Modal -->
+    <!-- Info Modal -->
     <div id="info-modal" class="modal hidden">
         <div class="modal-content glass-container">
             <span class="close-btn">&times;</span>
-            <h2>BOT'S LEARNED STRATEGY</h2>
+            <h2>BOT STRATEGY</h2>
             
             <div class="strategy-info">
-                <p><strong>Algorithm:</strong> Counterfactual Regret Minimization (CFR)</p>
-                <p><strong>Training:</strong> <span id="trained-iterations">10,000</span> iterations</p>
+                <p><strong>Algorithm:</strong> Monte Carlo Hand Evaluation</p>
+                <p><strong>Difficulty:</strong> <span id="difficulty-display">Medium</span></p>
             </div>
 
-            <h3>Strategy by Card (as Player 1)</h3>
-            <div id="strategy-p1" class="strategy-table"></div>
-
-            <h3>Strategy by Card (as Player 2)</h3>
-            <div id="strategy-p2" class="strategy-table"></div>
+            <h3>How the Bot Thinks</h3>
+            <div class="bot-explanation">
+                <div class="explanation-item">
+                    <strong>1. Hand Strength</strong>
+                    <p>Simulates thousands of random outcomes to estimate win probability</p>
+                </div>
+                <div class="explanation-item">
+                    <strong>2. Pot Odds</strong>
+                    <p>Compares bet size to potential winnings to find +EV plays</p>
+                </div>
+                <div class="explanation-item">
+                    <strong>3. Position</strong>
+                    <p>Plays tighter out of position, more aggressively in position</p>
+                </div>
+                <div class="explanation-item">
+                    <strong>4. Bluffing</strong>
+                    <p>Occasionally bluffs based on board texture and betting patterns</p>
+                </div>
+            </div>
 
             <p class="explanation">
-                CFR learns by simulating millions of hands against itself. 
-                It tracks "regret" for each decision—how much better an alternative action would have been.
-                Over time, it converges to a <strong>Nash Equilibrium</strong>: a strategy that cannot be exploited.
-                Notice how the bot learns to <strong>bluff with Jack</strong> and <strong>value bet with King</strong>.
+                Unlike Blackjack or Slots, poker involves <strong>imperfect information</strong> and 
+                <strong>opponent modeling</strong>. The bot uses Monte Carlo simulation to estimate 
+                its winning chances by dealing out random remaining cards thousands of times. 
+                This is similar to how professional poker software analyzes hands.
             </p>
         </div>
     </div>
 
-    <script src="cfr.js"></script>
+    <script src="poker.js"></script>
     <script src="game.js"></script>
 </body>
 </html>
