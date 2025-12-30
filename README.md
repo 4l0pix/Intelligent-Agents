@@ -35,7 +35,7 @@ Experience reinforcement learning in action through our web-based games:
 | [**Texas Hold'em**](Poker/webapp/index.html) | Monte Carlo Hand Evaluation | Challenge Carlos in heads-up poker—he estimates hand strength through simulation |
 | [**Roulette**](Roulette/webapp/index.html) | Monte Carlo Simulation | Test betting systems like Martingale—watch them all fail against the house edge |
 
-**[Launch Games](index.html)**
+**[Launch Games](https://4l0pix.github.io/Intelligent-Agents/)**
 
 ---
 
