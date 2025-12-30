@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           # The path is relative to the repository root
-          path: './BlackJack/webapp' 
+          path: './' 
 
       - name: Deploy to GitHub Pages
         id: deployment
