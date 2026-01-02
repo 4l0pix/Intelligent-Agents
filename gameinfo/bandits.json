@@ -11,14 +11,39 @@
     "Goal: maximize total winnings over time"
   ],
   "algorithm": {
-    "name": "ε-Greedy & Softmax",
-    "description": "ε-Greedy randomly explores with probability ε, otherwise picks the best-known option. Softmax assigns probabilities proportional to estimated values."
+    "name": "Epsilon-Greedy & Softmax",
+    "description": "e-Greedy randomly explores with probability e, otherwise picks the best-known option. Softmax assigns probabilities proportional to estimated values."
   },
   "mathematics": {
-    "stateSpace": "k machines × continuous value estimates",
-    "regretBound": "O(√(kT log T)) - sublinear growth",
-    "tradeoff": "Exploration (learning) vs Exploitation (earning)"
+    "regretBound": {
+      "value": "O(sqrt(kT log T))",
+      "proof": {
+        "explanation": "Regret measures the cost of not knowing which arm is optimal.",
+        "formula": "Regret_T = T · q*(a*) - E[Sum R_t]",
+        "steps": [
+          "Let delta_a = q*(a*) - q*(a) be the suboptimality gap",
+          "Expected regret from pulling suboptimal arm a is delta_a",
+          "e-greedy explores with probability e, exploits with 1-e",
+          "Regret grows as O(sqrt(T)), not O(T) - sublinear!"
+        ],
+        "conclusion": "Sublinear regret means average regret per round goes to zero."
+      }
+    },
+    "tradeoff": {
+      "value": "Explore vs Exploit",
+      "proof": {
+        "explanation": "The fundamental dilemma: try new options or stick with what seems best?",
+        "formula": "Explore: Gain information, risk short-term loss. Exploit: Use knowledge, risk missing better option.",
+        "steps": [
+          "Pure exploitation: May never find the best arm",
+          "Pure exploration: Never uses learned information",
+          "e-greedy: Fixed exploration rate e (e.g., 10%)",
+          "Softmax: Probability proportional to estimated value"
+        ],
+        "conclusion": "Some exploration is always needed. Balance short-term cost vs long-term gain."
+      }
+    }
   },
-  "keyInsight": "This is the fundamental exploration-exploitation dilemma in AI. Too much exploration wastes resources; too little means missing the best option.",
-  "formula": "P(action) = exp(Q(a)/τ) / Σexp(Q(b)/τ)"
+  "keyInsight": "This is the fundamental exploration-exploitation dilemma in AI.",
+  "formula": "P(action) = exp(Q(a)/tau) / Sum(exp(Q(b)/tau))"
 }

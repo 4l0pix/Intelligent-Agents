@@ -15,10 +15,49 @@
     "description": "The AI learns optimal play by simulating hundreds of thousands of games and tracking which actions lead to wins in each situation."
   },
   "mathematics": {
-    "stateSpace": "200 unique states (player total × dealer card × usable ace)",
-    "houseEdge": "0.5% with optimal play",
-    "convergence": "~500,000 episodes to learn optimal strategy"
+    "stateSpace": {
+      "value": "200 unique states",
+      "proof": {
+        "explanation": "The state space is derived from all possible combinations of game variables that affect decision-making.",
+        "formula": "|S| = (Player totals) x (Dealer cards) x (Usable ace) = 10 x 10 x 2 = 200",
+        "steps": [
+          "Player total: 12-21 (10 values) - below 12, always hit",
+          "Dealer showing: 2-11 (10 values) - Ace counted as 11",
+          "Usable ace: Yes/No (2 values)",
+          "Multiply: 10 x 10 x 2 = 200 unique states"
+        ],
+        "conclusion": "Each of these 200 states requires learning the optimal action (hit or stand)."
+      }
+    },
+    "houseEdge": {
+      "value": "0.5% with optimal play",
+      "proof": {
+        "explanation": "The house edge represents the casino's expected profit per bet.",
+        "formula": "House Edge = P(player busts first) + P(dealer wins | no bust) - P(player wins) ≈ 0.5%",
+        "steps": [
+          "Player must act first - if they bust, they lose regardless",
+          "This 'first-mover disadvantage' is the primary source",
+          "Blackjack pays 3:2 slightly favoring player",
+          "Net effect with optimal play: ~0.5% house advantage"
+        ],
+        "conclusion": "Even with perfect play, the house maintains a 0.5% edge."
+      }
+    },
+    "convergence": {
+      "value": "~500,000 episodes",
+      "proof": {
+        "explanation": "Monte Carlo methods require sufficient visits to each state-action pair to converge.",
+        "formula": "Required: Each (s,a) visited ~1000+ times. 400 pairs x 1000 = 400,000+ episodes",
+        "steps": [
+          "200 states x 2 actions = 400 state-action pairs",
+          "Each pair needs ~1000 samples for stable estimates",
+          "400 x 1000 = 400,000 minimum episodes",
+          "Add buffer: ~500,000 episodes recommended"
+        ],
+        "conclusion": "After 500,000 episodes, Q-values converge to optimal with high confidence."
+      }
+    }
   },
-  "keyInsight": "The learned policy matches the mathematically proven optimal basic strategy, demonstrating that reinforcement learning can discover optimal solutions through pure experience. But can it win the house edge?",
+  "keyInsight": "The learned policy matches the mathematically proven optimal basic strategy.",
   "formula": "Q(s,a) = E[Return | State=s, Action=a]"
 }

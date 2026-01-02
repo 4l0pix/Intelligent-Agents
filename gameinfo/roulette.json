@@ -15,10 +15,49 @@
     "description": "We simulate thousands of sessions using different betting systems to prove they all converge to the same negative expected value."
   },
   "mathematics": {
-    "houseEdge": "5.26% on every bet type",
-    "probability": "18/38 = 47.37% for even-money bets",
-    "theorem": "Optional Stopping Theorem proves no exit strategy works"
+    "houseEdge": {
+      "value": "5.26% always",
+      "proof": {
+        "explanation": "The house edge is mathematically identical for ALL bet types in American roulette.",
+        "formula": "E[Profit] = P(win) x payout + P(lose) x (-1) = -2/38 = -5.26%",
+        "steps": [
+          "38 pockets: 18 red, 18 black, 2 green (0, 00)",
+          "Red/Black wins 18/38 = 47.37% (not 50%!)",
+          "Green pockets create the house edge",
+          "Payouts assume 36 pockets, but there are 38"
+        ],
+        "conclusion": "The house edge cannot be avoided. Every bet loses 5.26 cents per dollar on average."
+      }
+    },
+    "winProbability": {
+      "value": "18/38 = 47.37%",
+      "proof": {
+        "explanation": "The probability appears close to 50%, but green pockets make all the difference.",
+        "formula": "P(Red) = 18/38 = 0.4737, P(Not Red) = 20/38 = 0.5263",
+        "steps": [
+          "18 red numbers out of 38 total pockets",
+          "20 non-red (18 black + 2 green)",
+          "Difference from fair: 50% - 47.37% = 2.63%",
+          "Over 1000 spins: expect ~474 wins, ~526 losses"
+        ],
+        "conclusion": "The 2.63% probability disadvantage creates the 5.26% house edge."
+      }
+    },
+    "theorem": {
+      "value": "Optional Stopping",
+      "proof": {
+        "explanation": "The Optional Stopping Theorem proves no betting strategy can overcome negative expected value.",
+        "formula": "For supermartingale X_t: E[X_tau] <= E[X_0] = 0",
+        "steps": [
+          "Let X_t = cumulative profit at time t",
+          "Each bet has E[profit] = -5.26% x bet size",
+          "X_t is a supermartingale (expected value decreases)",
+          "For ANY stopping rule tau: E[X_tau] <= 0"
+        ],
+        "conclusion": "Martingale, Fibonacci, 'quit while ahead' - ALL fail mathematically."
+      }
+    }
   },
-  "keyInsight": "The Martingale, Fibonacci, and D'Alembert systems all fail because expected value cannot be changed by bet sizing. Mathematics guarantees the house wins.",
-  "formula": "E[Profit] = (+1)(18/38) + (-1)(20/38) = -2/38 ≈ -5.26%"
+  "keyInsight": "No betting system can overcome the house edge. Mathematics guarantees the house wins.",
+  "formula": "E[Profit] = (18/38)(+1) + (20/38)(-1) = -5.26%"
 }

@@ -15,10 +15,49 @@
     "description": "The AI estimates hand strength by simulating thousands of possible outcomes, calculating win probability against random opponent hands."
   },
   "mathematics": {
-    "stateSpace": "~10^18 possible game states",
-    "combinations": "2,598,960 unique 5-card hands",
-    "precision": "±3% equity estimate with 1,000 simulations"
+    "stateSpace": {
+      "value": "~10^18 states",
+      "proof": {
+        "explanation": "Poker has an enormous state space due to hidden information and betting history.",
+        "formula": "States ≈ C(52,2) x C(50,2) x C(48,5) x (betting histories) ≈ 10^18",
+        "steps": [
+          "Hole card combinations: C(52,2) = 1,326",
+          "Opponent hole cards: C(50,2) = 1,225",
+          "Board combinations: C(48,5) = 1,712,304",
+          "Betting sequences: Exponential in game length"
+        ],
+        "conclusion": "This massive state space makes poker intractable to solve exactly."
+      }
+    },
+    "combinations": {
+      "value": "2,598,960 hands",
+      "proof": {
+        "explanation": "Total unique 5-card poker hands from a standard 52-card deck.",
+        "formula": "C(52,5) = 52! / (5! x 47!) = 2,598,960",
+        "steps": [
+          "Choose 5 cards from 52: n! / (k!(n-k)!)",
+          "Royal Flush: 4 (one per suit)",
+          "Straight Flush: 36",
+          "High Card: 1,302,540 (50.1%)"
+        ],
+        "conclusion": "Most hands (92%) are one pair or worse."
+      }
+    },
+    "precision": {
+      "value": "+/-3% with 1K sims",
+      "proof": {
+        "explanation": "Monte Carlo precision improves with square root of sample size (CLT).",
+        "formula": "95% CI = +/-1.96 x (0.5 / sqrt(1000)) ≈ +/-3.1%",
+        "steps": [
+          "Each simulation: Win(1), Lose(0), or Tie(0.5)",
+          "Standard deviation sigma ≈ 0.5",
+          "With n=1000: SE = 0.5/sqrt(1000) = 0.0158",
+          "For +/-1%: need ~10,000 simulations"
+        ],
+        "conclusion": "1000 simulations provide sufficient accuracy for most decisions."
+      }
+    }
   },
-  "keyInsight": "Pot odds vs equity: Call when your win probability exceeds the ratio of call amount to total pot. This is the mathematical foundation of poker strategy.",
-  "formula": "Equity = Wins / Simulations → Call if Equity > Call/(Pot+Call)"
+  "keyInsight": "Call when your win probability exceeds the ratio of call amount to total pot.",
+  "formula": "Equity = Wins / Simulations"
 }
