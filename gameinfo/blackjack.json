@@ -19,6 +19,6 @@
     "houseEdge": "0.5% with optimal play",
     "convergence": "~500,000 episodes to learn optimal strategy"
   },
-  "keyInsight": "The learned policy matches the mathematically proven optimal basic strategy, demonstrating that reinforcement learning can discover optimal solutions through pure experience.",
+  "keyInsight": "The learned policy matches the mathematically proven optimal basic strategy, demonstrating that reinforcement learning can discover optimal solutions through pure experience. But can it win the house edge?",
   "formula": "Q(s,a) = E[Return | State=s, Action=a]"
 }
