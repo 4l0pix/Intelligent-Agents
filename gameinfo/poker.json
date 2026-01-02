@@ -1,0 +1,24 @@
+{
+  "id": "poker",
+  "title": "Texas Hold'em",
+  "subtitle": "Monte Carlo Hand Evaluation",
+  "overview": "The world's most popular poker variant. Players combine two private cards with five community cards to make the best five-card hand.",
+  "rules": [
+    "Each player receives 2 hole cards (private)",
+    "5 community cards are dealt face-up",
+    "Make the best 5-card hand from any 7 cards",
+    "Betting rounds: Preflop, Flop, Turn, River",
+    "Hand rankings from Royal Flush to High Card"
+  ],
+  "algorithm": {
+    "name": "Monte Carlo Simulation",
+    "description": "The AI estimates hand strength by simulating thousands of possible outcomes, calculating win probability against random opponent hands."
+  },
+  "mathematics": {
+    "stateSpace": "~10^18 possible game states",
+    "combinations": "2,598,960 unique 5-card hands",
+    "precision": "±3% equity estimate with 1,000 simulations"
+  },
+  "keyInsight": "Pot odds vs equity: Call when your win probability exceeds the ratio of call amount to total pot. This is the mathematical foundation of poker strategy.",
+  "formula": "Equity = Wins / Simulations → Call if Equity > Call/(Pot+Call)"
+}

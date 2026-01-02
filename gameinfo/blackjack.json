@@ -1,0 +1,24 @@
+{
+  "id": "blackjack",
+  "title": "Blackjack",
+  "subtitle": "Monte Carlo Exploring Starts",
+  "overview": "A classic card game where the goal is to beat the dealer by getting a hand value as close to 21 as possible without going over.",
+  "rules": [
+    "Cards 2-10 are worth their face value",
+    "Face cards (J, Q, K) are worth 10",
+    "Aces are worth 1 or 11 (whichever is better)",
+    "Beat the dealer without exceeding 21",
+    "Dealer must hit on 16, stand on 17"
+  ],
+  "algorithm": {
+    "name": "Monte Carlo Exploring Starts",
+    "description": "The AI learns optimal play by simulating hundreds of thousands of games and tracking which actions lead to wins in each situation."
+  },
+  "mathematics": {
+    "stateSpace": "200 unique states (player total × dealer card × usable ace)",
+    "houseEdge": "0.5% with optimal play",
+    "convergence": "~500,000 episodes to learn optimal strategy"
+  },
+  "keyInsight": "The learned policy matches the mathematically proven optimal basic strategy, demonstrating that reinforcement learning can discover optimal solutions through pure experience.",
+  "formula": "Q(s,a) = E[Return | State=s, Action=a]"
+}

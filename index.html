@@ -77,12 +77,40 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
         .game-card:hover {
             border-color: var(--green-accent);
             box-shadow: 0 0 30px var(--green-glow);
             transform: translateY(-5px);
+        }
+
+        .info-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .info-btn:hover {
+            background: var(--green-accent);
+            color: var(--green-dark);
+            border-color: var(--green-accent);
+            transform: scale(1.1);
         }
 
         .game-icon {
@@ -141,6 +169,192 @@
             box-shadow: 0 0 15px var(--green-glow);
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, var(--green-medium) 0%, var(--green-dark) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 100, 100, 0.3);
+            border-color: rgba(255, 100, 100, 0.5);
+            color: #ff6b6b;
+        }
+
+        .modal-title {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: var(--green-accent);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .modal-body {
+            padding: 25px 30px 30px;
+        }
+
+        .modal-section {
+            margin-bottom: 22px;
+        }
+
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-section-title {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--green-accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .modal-section-content {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .modal-rules {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-rules li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        .modal-rules li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            background: var(--green-accent);
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modal-stat {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 15px;
+            border-radius: 12px;
+        }
+
+        .modal-stat-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .modal-stat-value {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        .modal-formula {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--green-accent);
+            text-align: center;
+            border-left: 3px solid var(--green-accent);
+        }
+
+        .modal-insight {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            padding: 15px 18px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
         footer {
             margin-top: 50px;
             color: var(--text-secondary);
@@ -155,6 +369,20 @@
 
         footer a:hover {
             text-decoration: underline;
+        }
+
+        /* Scrollbar */
+        .modal::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .modal::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 3px;
         }
 
         @media (max-width: 480px) {
@@ -183,6 +411,20 @@
             .game-description {
                 font-size: 0.85rem;
             }
+
+            .modal {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .modal-header, .modal-body {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .modal-stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -193,6 +435,7 @@
 
         <div class="games-grid">
             <a href="BlackJack/webapp/index.html" class="game-card">
+                <button class="info-btn" data-game="blackjack" onclick="event.preventDefault(); showInfo('blackjack');">i</button>
                 <div class="game-icon">BJ</div>
                 <h2 class="game-title">BLACKJACK</h2>
                 <p class="game-description">
@@ -207,6 +450,7 @@
             </a>
 
             <a href="BanditProblem/webapp/index.html" class="game-card">
+                <button class="info-btn" data-game="bandits" onclick="event.preventDefault(); showInfo('bandits');">i</button>
                 <div class="game-icon">777</div>
                 <h2 class="game-title">BANDIT SLOTS</h2>
                 <p class="game-description">
@@ -215,12 +459,13 @@
                 </p>
                 <div class="game-algorithm">
                     <strong>ALGORITHM</strong>
-                    ε-Greedy & Softmax
+                    e-Greedy & Softmax
                 </div>
                 <span class="play-btn">Play Now</span>
             </a>
 
             <a href="Poker/webapp/index.html" class="game-card">
+                <button class="info-btn" data-game="poker" onclick="event.preventDefault(); showInfo('poker');">i</button>
                 <div class="game-icon">TH</div>
                 <h2 class="game-title">TEXAS HOLD'EM</h2>
                 <p class="game-description">
@@ -235,6 +480,7 @@
             </a>
 
             <a href="Roulette/webapp/index.html" class="game-card">
+                <button class="info-btn" data-game="roulette" onclick="event.preventDefault(); showInfo('roulette');">i</button>
                 <div class="game-icon">R</div>
                 <h2 class="game-title">ROULETTE</h2>
                 <p class="game-description">
@@ -253,5 +499,179 @@
             <p>Reinforcement Learning Demonstrations</p>
         </footer>
     </div>
+
+    <!-- Info Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <h2 class="modal-title" id="modal-title">Game Title</h2>
+                <p class="modal-subtitle" id="modal-subtitle">Algorithm Name</p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title">Overview</div>
+                    <p class="modal-section-content" id="modal-overview"></p>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Rules</div>
+                    <ul class="modal-rules" id="modal-rules"></ul>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">The Algorithm</div>
+                    <p class="modal-section-content" id="modal-algorithm"></p>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Mathematics</div>
+                    <div class="modal-stats" id="modal-stats"></div>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Key Formula</div>
+                    <div class="modal-formula" id="modal-formula"></div>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">Key Insight</div>
+                    <div class="modal-insight" id="modal-insight"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game information data
+        const gameInfo = {
+            blackjack: {
+                title: "Blackjack",
+                subtitle: "Monte Carlo Exploring Starts",
+                overview: "A classic card game where the goal is to beat the dealer by getting a hand value as close to 21 as possible without going over.",
+                rules: [
+                    "Cards 2-10 are worth their face value",
+                    "Face cards (J, Q, K) are worth 10",
+                    "Aces are worth 1 or 11 (whichever is better)",
+                    "Beat the dealer without exceeding 21",
+                    "Dealer must hit on 16, stand on 17"
+                ],
+                algorithm: "The AI learns optimal play by simulating hundreds of thousands of games and tracking which actions lead to wins in each situation.",
+                stats: {
+                    "State Space": "200 unique states",
+                    "House Edge": "0.5% optimal",
+                    "Convergence": "~500K episodes"
+                },
+                formula: "Q(s,a) = E[Return | State=s, Action=a]",
+                insight: "The learned policy matches the mathematically proven optimal basic strategy, demonstrating that reinforcement learning can discover optimal solutions through pure experience."
+            },
+            bandits: {
+                title: "Bandit Slots",
+                subtitle: "Multi-Armed Bandit Problem",
+                overview: "A row of slot machines, each with unknown payout rates. The challenge: find the best machine while minimizing losses from testing bad ones.",
+                rules: [
+                    "Each machine has a hidden payout probability",
+                    "You don't know which machine is best",
+                    "Every pull costs money (opportunity cost)",
+                    "Balance exploring new machines vs exploiting known good ones",
+                    "Goal: maximize total winnings over time"
+                ],
+                algorithm: "e-Greedy randomly explores with probability e, otherwise picks the best-known option. Softmax assigns probabilities proportional to estimated values.",
+                stats: {
+                    "Regret Bound": "O(sqrt(kT log T))",
+                    "Tradeoff": "Explore vs Exploit"
+                },
+                formula: "P(action) = exp(Q(a)/t) / Sum(exp(Q(b)/t))",
+                insight: "This is the fundamental exploration-exploitation dilemma in AI. Too much exploration wastes resources; too little means missing the best option."
+            },
+            poker: {
+                title: "Texas Hold'em",
+                subtitle: "Monte Carlo Hand Evaluation",
+                overview: "The world's most popular poker variant. Players combine two private cards with five community cards to make the best five-card hand.",
+                rules: [
+                    "Each player receives 2 hole cards (private)",
+                    "5 community cards are dealt face-up",
+                    "Make the best 5-card hand from any 7 cards",
+                    "Betting rounds: Preflop, Flop, Turn, River",
+                    "Hand rankings from Royal Flush to High Card"
+                ],
+                algorithm: "The AI estimates hand strength by simulating thousands of possible outcomes, calculating win probability against random opponent hands.",
+                stats: {
+                    "State Space": "~10^18 states",
+                    "Combinations": "2,598,960 hands",
+                    "Precision": "+/-3% with 1K sims"
+                },
+                formula: "Equity = Wins / Simulations",
+                insight: "Pot odds vs equity: Call when your win probability exceeds the ratio of call amount to total pot. This is the mathematical foundation of poker strategy."
+            },
+            roulette: {
+                title: "Roulette",
+                subtitle: "Betting Systems Analysis",
+                overview: "A game of pure chance where players bet on where a ball will land on a spinning wheel. Used here to demonstrate why all betting systems fail.",
+                rules: [
+                    "American wheel: 38 pockets (0, 00, 1-36)",
+                    "Even-money bets: Red/Black, Odd/Even",
+                    "Inside bets: Single numbers pay 35:1",
+                    "Each spin is completely independent",
+                    "House edge is built into the wheel itself"
+                ],
+                algorithm: "We simulate thousands of sessions using different betting systems to prove they all converge to the same negative expected value.",
+                stats: {
+                    "House Edge": "5.26% always",
+                    "Win Prob": "18/38 = 47.37%",
+                    "Theorem": "Optional Stopping"
+                },
+                formula: "E[Profit] = (18/38)(+1) + (20/38)(-1) = -5.26%",
+                insight: "The Martingale, Fibonacci, and D'Alembert systems all fail because expected value cannot be changed by bet sizing. Mathematics guarantees the house wins."
+            }
+        };
+
+        function showInfo(gameId) {
+            const info = gameInfo[gameId];
+            if (!info) return;
+
+            document.getElementById('modal-title').textContent = info.title;
+            document.getElementById('modal-subtitle').textContent = info.subtitle;
+            document.getElementById('modal-overview').textContent = info.overview;
+            
+            const rulesEl = document.getElementById('modal-rules');
+            rulesEl.innerHTML = info.rules.map(rule => `<li>${rule}</li>`).join('');
+            
+            document.getElementById('modal-algorithm').textContent = info.algorithm;
+            
+            const statsEl = document.getElementById('modal-stats');
+            statsEl.innerHTML = Object.entries(info.stats).map(([label, value]) => `
+                <div class="modal-stat">
+                    <div class="modal-stat-label">${label}</div>
+                    <div class="modal-stat-value">${value}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('modal-formula').textContent = info.formula;
+            document.getElementById('modal-insight').textContent = info.insight;
+
+            document.getElementById('modal-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close on overlay click
+        document.getElementById('modal-overlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>

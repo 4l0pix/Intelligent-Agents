@@ -1,0 +1,24 @@
+{
+  "id": "bandits",
+  "title": "Bandit Slots",
+  "subtitle": "Multi-Armed Bandit Problem",
+  "overview": "A row of slot machines, each with unknown payout rates. The challenge: find the best machine while minimizing losses from testing bad ones.",
+  "rules": [
+    "Each machine has a hidden payout probability",
+    "You don't know which machine is best",
+    "Every pull costs money (opportunity cost)",
+    "Balance exploring new machines vs exploiting known good ones",
+    "Goal: maximize total winnings over time"
+  ],
+  "algorithm": {
+    "name": "ε-Greedy & Softmax",
+    "description": "ε-Greedy randomly explores with probability ε, otherwise picks the best-known option. Softmax assigns probabilities proportional to estimated values."
+  },
+  "mathematics": {
+    "stateSpace": "k machines × continuous value estimates",
+    "regretBound": "O(√(kT log T)) - sublinear growth",
+    "tradeoff": "Exploration (learning) vs Exploitation (earning)"
+  },
+  "keyInsight": "This is the fundamental exploration-exploitation dilemma in AI. Too much exploration wastes resources; too little means missing the best option.",
+  "formula": "P(action) = exp(Q(a)/τ) / Σexp(Q(b)/τ)"
+}

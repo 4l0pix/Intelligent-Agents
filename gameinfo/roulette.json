@@ -1,0 +1,24 @@
+{
+  "id": "roulette",
+  "title": "Roulette",
+  "subtitle": "Betting Systems Analysis",
+  "overview": "A game of pure chance where players bet on where a ball will land on a spinning wheel. Used here to demonstrate why all betting systems fail.",
+  "rules": [
+    "American wheel: 38 pockets (0, 00, 1-36)",
+    "Even-money bets: Red/Black, Odd/Even, High/Low",
+    "Inside bets: Single numbers pay 35:1",
+    "Each spin is completely independent",
+    "House edge is built into the wheel itself"
+  ],
+  "algorithm": {
+    "name": "Monte Carlo Analysis",
+    "description": "We simulate thousands of sessions using different betting systems to prove they all converge to the same negative expected value."
+  },
+  "mathematics": {
+    "houseEdge": "5.26% on every bet type",
+    "probability": "18/38 = 47.37% for even-money bets",
+    "theorem": "Optional Stopping Theorem proves no exit strategy works"
+  },
+  "keyInsight": "The Martingale, Fibonacci, and D'Alembert systems all fail because expected value cannot be changed by bet sizing. Mathematics guarantees the house wins.",
+  "formula": "E[Profit] = (+1)(18/38) + (-1)(20/38) = -2/38 ≈ -5.26%"
+}
