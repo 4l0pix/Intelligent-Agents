@@ -6,7 +6,7 @@
 >
 > Through interactive web-based games, we show how AI agents trained on basic statistical strategies can consistently outperform human intuition. These bots don't cheat—they simply learn optimal decision-making through thousands of simulated rounds. The uncomfortable truth? If a simple algorithm can master these games, the house always has the edge over human players who rely on luck and gut feelings.
 >
-> **Play against our trained bots and see for yourself.**
+> **Play against trained bots and see for yourself.**
 
 ---
 
