@@ -1,7 +1,4 @@
-"""
-Blackjack - Monte Carlo Exploring Starts (ES)
-Finds the optimal policy for playing Blackjack using Monte Carlo method.
-"""
+#koukosias athanasios 2025-2026
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,66 +7,62 @@ from collections import defaultdict
 import random
 
 
-# Actions
+#actions
 HIT = 0
 STICK = 1
 ACTIONS = [HIT, STICK]
 
-# Card values
-CARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]  # A, 2-10, J, Q, K
+#card values
+CARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]  #a, 2-10, j, q, k
 
 
 def draw_card():
-    """Draw a card from an infinite deck."""
+    #draw a card from an infinite deck.
     return random.choice(CARD_VALUES)
 
 
 def draw_hand():
-    """Draw initial two cards."""
+    #draw initial two cards.
     return [draw_card(), draw_card()]
 
 
 def usable_ace(hand):
-    """Check if hand has a usable ace (can count as 11 without busting)."""
+    #check if hand has a usable ace (can count as 11 without busting).
     return 1 in hand and sum(hand) + 10 <= 21
 
 
 def sum_hand(hand):
-    """Return the sum of the hand, treating ace as 11 if beneficial."""
+    #return the sum of the hand, treating ace as 11 if beneficial.
     if usable_ace(hand):
         return sum(hand) + 10
     return sum(hand)
 
 
 def is_bust(hand):
-    """Check if hand is busted (over 21)."""
+    #check if hand is busted (over 21).
     return sum_hand(hand) > 21
 
 
 def get_state(player_hand, dealer_showing):
-    """
-    Get state representation.
-    State: (player_sum, dealer_showing, usable_ace)
-    - player_sum: 12-21 (below 12, player always hits)
-    - dealer_showing: 1-10 (ace=1)
-    - usable_ace: True/False
-    """
+    #get state representation.
+    #state: (player_sum, dealer_showing, usable_ace)
+    #- player_sum: 12-21 (below 12, player always hits)
+    #- dealer_showing: 1-10 (ace=1)
+    #- usable_ace: true/false
     return (sum_hand(player_hand), dealer_showing, usable_ace(player_hand))
 
 
 def player_policy(state, Q, policy_type='greedy'):
-    """
-    Player policy.
-    - 'initial': stick only on 20 or 21
-    - 'greedy': follow the learned Q-values
-    """
+    #player policy.
+    #- 'initial': stick only on 20 or 21
+    #- 'greedy': follow the learned q-values
     player_sum, dealer_showing, has_usable_ace = state
     
     if policy_type == 'initial':
-        # Initial policy: stick only on 20 or 21
+        #initial policy: stick only on 20 or 21
         return STICK if player_sum >= 20 else HIT
     else:
-        # Greedy policy based on Q-values
+        #greedy policy based on q-values
         if Q[(state, HIT)] >= Q[(state, STICK)]:
             return HIT
         else:
@@ -77,67 +70,62 @@ def player_policy(state, Q, policy_type='greedy'):
 
 
 def dealer_policy(dealer_hand):
-    """
-    Dealer's fixed strategy: hit if sum < 17, otherwise stick.
-    """
+    #dealer's fixed strategy: hit if sum < 17, otherwise stick.
     return HIT if sum_hand(dealer_hand) < 17 else STICK
 
 
 def play_game(initial_state=None, initial_action=None, Q=None):
-    """
-    Play one episode of Blackjack.
-    Returns: list of (state, action, reward) tuples
-    
-    If initial_state and initial_action are provided, use them (Exploring Starts).
-    """
-    # Initialize player's hand
+    #play one episode of blackjack.
+    #returns: list of (state, action, reward) tuples
+    #if initial_state and initial_action are provided, use them (exploring starts).
+    #initialize player's hand
     player_hand = draw_hand()
     
-    # Initialize dealer's hand
+    #initialize dealer's hand
     dealer_hand = draw_hand()
-    dealer_showing = dealer_hand[0]  # First card is face up
+    dealer_showing = dealer_hand[0]  #first card is face up
     
-    # For Exploring Starts: set up initial state
+    #for exploring starts: set up initial state
     if initial_state is not None:
-        # We need to create a hand that matches the initial state
+        #we need to create a hand that matches the initial state
         player_sum, dealer_showing, has_usable_ace = initial_state
         
-        # Create player hand matching the state
+        #create player hand matching the state
         if has_usable_ace:
-            # Hand with usable ace: ace + (sum - 11)
+            #hand with usable ace: ace + (sum - 11)
             player_hand = [1, player_sum - 11]
         else:
-            # Hand without usable ace
+            #hand without usable ace
             if player_sum <= 11:
                 player_hand = [player_sum]
             else:
-                # Split into two cards
+                #split into two cards
                 player_hand = [10, player_sum - 10]
         
-        # Create dealer hand with the showing card
+        #create dealer hand with the showing card
         dealer_hand = [dealer_showing, draw_card()]
     
-    # Episode history
+    #episode history
     episode = []
     
-    # Check for naturals (21 with initial two cards)
+    #check for naturals (21 with initial two cards)
     player_sum = sum_hand(player_hand)
     
-    # Player's turn
+    #player's turn
     while True:
         player_sum = sum_hand(player_hand)
         
-        # If player sum < 12, always hit (no decision needed)
+        #if player sum < 12, always hit (no decision needed)
         if player_sum < 12:
             player_hand.append(draw_card())
             continue
         
         state = get_state(player_hand, dealer_showing)
         
-        # Choose action
+        #choose action
         if initial_action is not None:
             action = initial_action
-            initial_action = None  # Only use initial action once
+            initial_action = None  #only use initial action once
         elif Q is not None:
             action = player_policy(state, Q, 'greedy')
         else:
@@ -147,44 +135,42 @@ def play_game(initial_state=None, initial_action=None, Q=None):
         
         if action == STICK:
             break
-        else:  # HIT
+        else:  #hit
             player_hand.append(draw_card())
             if is_bust(player_hand):
-                # Player busts, loses
+                #player busts, loses
                 return [(s, a, 0) for s, a in episode[:-1]] + [(episode[-1][0], episode[-1][1], -1)]
     
-    # Dealer's turn (only if player didn't bust)
+    #dealer's turn (only if player didn't bust)
     while dealer_policy(dealer_hand) == HIT:
         dealer_hand.append(draw_card())
     
-    # Determine winner
+    #determine winner
     player_sum = sum_hand(player_hand)
     dealer_sum = sum_hand(dealer_hand)
     
     if is_bust(dealer_hand):
-        reward = 1  # Dealer busts, player wins
+        reward = 1  #dealer busts, player wins
     elif dealer_sum > player_sum:
-        reward = -1  # Dealer wins
+        reward = -1  #dealer wins
     elif dealer_sum < player_sum:
-        reward = 1  # Player wins
+        reward = 1  #player wins
     else:
-        reward = 0  # Tie
+        reward = 0  #tie
     
-    # Assign reward to all state-action pairs in episode
+    #assign reward to all state-action pairs in episode
     return [(s, a, 0) for s, a in episode[:-1]] + [(episode[-1][0], episode[-1][1], reward)]
 
 
 def monte_carlo_es(num_episodes=500000):
-    """
-    Monte Carlo Exploring Starts algorithm to find optimal policy.
-    """
-    # Initialize Q-values and returns
+    #monte carlo exploring starts algorithm to find optimal policy.
+    #initialize q-values and returns
     Q = defaultdict(float)
     returns_sum = defaultdict(float)
     returns_count = defaultdict(int)
     
-    # All possible states for exploring starts
-    # player_sum: 12-21, dealer_showing: 1-10, usable_ace: True/False
+    #all possible states for exploring starts
+    #player_sum: 12-21, dealer_showing: 1-10, usable_ace: true/false
     all_states = []
     for player_sum in range(12, 22):
         for dealer_showing in range(1, 11):
@@ -195,21 +181,21 @@ def monte_carlo_es(num_episodes=500000):
         if (episode_num + 1) % 100000 == 0:
             print(f"Episode {episode_num + 1}/{num_episodes}")
         
-        # Exploring Starts: random initial state and action
+        #exploring starts: random initial state and action
         initial_state = random.choice(all_states)
         initial_action = random.choice(ACTIONS)
         
-        # Generate episode
+        #generate episode
         episode = play_game(initial_state, initial_action, Q)
         
-        # First-visit MC: update Q-values
+        #first-visit mc: update q-values
         visited = set()
-        G = 0  # Return (gamma = 1, so no discounting)
+        G = 0  #return (gamma = 1, so no discounting)
         
-        # Process episode in reverse order
+        #process episode in reverse order
         for t in range(len(episode) - 1, -1, -1):
             state, action, reward = episode[t]
-            G = G + reward  # gamma = 1
+            G = G + reward  #gamma = 1
             
             state_action = (state, action)
             if state_action not in visited:
@@ -218,7 +204,7 @@ def monte_carlo_es(num_episodes=500000):
                 returns_count[state_action] += 1
                 Q[state_action] = returns_sum[state_action] / returns_count[state_action]
     
-    # Extract optimal policy
+    #extract optimal policy
     policy = {}
     for state in all_states:
         if Q[(state, HIT)] >= Q[(state, STICK)]:
@@ -230,14 +216,14 @@ def monte_carlo_es(num_episodes=500000):
 
 
 def plot_policy(policy, title_suffix=""):
-    """Plot the optimal policy for usable and non-usable ace cases."""
+    #plot the optimal policy for usable and non-usable ace cases.
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
     for idx, usable_ace in enumerate([True, False]):
         ax = axes[idx]
         
-        # Create policy grid
-        policy_grid = np.zeros((10, 10))  # player_sum (12-21) x dealer_showing (1-10)
+        #create policy grid
+        policy_grid = np.zeros((10, 10))  #player_sum (12-21) x dealer_showing (1-10)
         
         for player_sum in range(12, 22):
             for dealer_showing in range(1, 11):
@@ -245,7 +231,7 @@ def plot_policy(policy, title_suffix=""):
                 action = policy.get(state, HIT)
                 policy_grid[player_sum - 12, dealer_showing - 1] = action
         
-        # Plot
+        #plot
         im = ax.imshow(policy_grid, cmap='RdYlGn', aspect='auto', 
                        origin='lower', vmin=0, vmax=1)
         
@@ -259,7 +245,7 @@ def plot_policy(policy, title_suffix=""):
         ace_str = "Usable Ace" if usable_ace else "No Usable Ace"
         ax.set_title(f"Optimal Policy ({ace_str})")
         
-        # Add legend
+        #add legend
         for i in range(10):
             for j in range(10):
                 text = "S" if policy_grid[i, j] == STICK else "H"
@@ -268,20 +254,20 @@ def plot_policy(policy, title_suffix=""):
     
     plt.suptitle(f"Blackjack Optimal Policy (Monte Carlo ES){title_suffix}")
     plt.tight_layout()
-    plt.savefig('c:/Users/akoukosias/Documents/GitHub/Intelligent-Agents/BlackJack/policy.png', dpi=150)
+    plt.savefig('policy.png', dpi=150)
     plt.show()
 
 
 def plot_value_function(Q, title_suffix=""):
-    """Plot the state-value function as 3D surface plots."""
+    #plot the state-value function as 3d surface plots.
     fig = plt.figure(figsize=(14, 5))
     
     for idx, usable_ace in enumerate([True, False]):
         ax = fig.add_subplot(1, 2, idx + 1, projection='3d')
         
-        # Create value grid
-        X = np.arange(1, 11)  # dealer showing
-        Y = np.arange(12, 22)  # player sum
+        #create value grid
+        X = np.arange(1, 11)  #dealer showing
+        Y = np.arange(12, 22)  #player sum
         X, Y = np.meshgrid(X, Y)
         
         Z = np.zeros_like(X, dtype=float)
@@ -289,7 +275,7 @@ def plot_value_function(Q, title_suffix=""):
         for i, player_sum in enumerate(range(12, 22)):
             for j, dealer_showing in enumerate(range(1, 11)):
                 state = (player_sum, dealer_showing, usable_ace)
-                # V(s) = max_a Q(s, a)
+                #v(s) = max_a q(s, a)
                 Z[i, j] = max(Q[(state, HIT)], Q[(state, STICK)])
         
         ax.plot_surface(X, Y, Z, cmap='viridis', edgecolor='none', alpha=0.8)
@@ -303,23 +289,23 @@ def plot_value_function(Q, title_suffix=""):
     
     plt.suptitle(f"Blackjack State-Value Function (Monte Carlo ES){title_suffix}")
     plt.tight_layout()
-    plt.savefig('c:/Users/akoukosias/Documents/GitHub/Intelligent-Agents/BlackJack/value_function.png', dpi=150)
+    plt.savefig('value_function.png', dpi=150)
     plt.show()
 
 
 def evaluate_policy(policy, num_episodes=100000):
-    """Evaluate a policy by playing many episodes and computing win rate."""
+    #evaluate a policy by playing many episodes and computing win rate.
     wins = 0
     losses = 0
     ties = 0
     
     for _ in range(num_episodes):
-        # Play without exploring starts
+        #play without exploring starts
         player_hand = draw_hand()
         dealer_hand = draw_hand()
         dealer_showing = dealer_hand[0]
         
-        # Player's turn
+        #player's turn
         while True:
             player_sum = sum_hand(player_hand)
             
@@ -335,7 +321,7 @@ def evaluate_policy(policy, num_episodes=100000):
             action = policy.get(state, HIT)
             
             if action == STICK:
-                # Dealer's turn
+                #dealer's turn
                 while dealer_policy(dealer_hand) == HIT:
                     dealer_hand.append(draw_card())
                 
@@ -355,34 +341,33 @@ def evaluate_policy(policy, num_episodes=100000):
                 player_hand.append(draw_card())
     
     total = wins + losses + ties
-    print(f"\nPolicy Evaluation ({num_episodes} episodes):")
-    print(f"  Wins:   {wins} ({100*wins/total:.2f}%)")
-    print(f"  Losses: {losses} ({100*losses/total:.2f}%)")
-    print(f"  Ties:   {ties} ({100*ties/total:.2f}%)")
-    print(f"  Expected Return: {(wins - losses) / total:.4f}")
+    print(f"\npolicy evaluation ({num_episodes} episodes):")
+    print(f"  wins:   {wins} ({100*wins/total:.2f}%)")
+    print(f"  losses: {losses} ({100*losses/total:.2f}%)")
+    print(f"  ties:   {ties} ({100*ties/total:.2f}%)")
+    print(f"  expected return: {(wins - losses) / total:.4f}")
     
     return wins, losses, ties
 
 
 def print_policy(policy):
-    """Print the policy in a readable format."""
-    print("\n" + "="*60)
+    #print the policy in a readable format.
     print("OPTIMAL POLICY")
-    print("="*60)
+
     
     for usable_ace in [False, True]:
         ace_str = "WITH USABLE ACE" if usable_ace else "WITHOUT USABLE ACE"
         print(f"\n{ace_str}")
         print("-" * 40)
         
-        # Header
+        #header
         print("Player\\Dealer", end="")
         for d in range(1, 11):
             label = "A" if d == 1 else str(d)
             print(f" {label:>2}", end="")
         print()
         
-        # Policy grid
+        #policy grid
         for p in range(21, 11, -1):
             print(f"    {p:>2}       ", end="")
             for d in range(1, 11):
@@ -395,29 +380,22 @@ def print_policy(policy):
     print("\nLegend: H = Hit, S = Stick")
 
 
-def main():
-    print("="*60)
-    print("BLACKJACK - Monte Carlo Exploring Starts")
-    print("="*60)
-    
-    # Run Monte Carlo ES
-    print("\nTraining with Monte Carlo Exploring Starts...")
-    print("This may take a minute...\n")
+def main():    
+    #run monte carlo es
+    print("\ntraining with Monte Carlo Exploring Starts")
     
     Q, policy = monte_carlo_es(num_episodes=500000)
     
-    # Print the optimal policy
+    #print the optimal policy
     print_policy(policy)
     
-    # Evaluate the learned policy
+    #evaluate the learned policy
     evaluate_policy(policy, num_episodes=100000)
     
-    # Plot results
-    print("\nGenerating plots...")
+    #plot results
     plot_policy(policy)
     plot_value_function(Q)
-    
-    print("\nDone! Plots saved to BlackJack folder.")
+ 
 
 
 if __name__ == "__main__":
