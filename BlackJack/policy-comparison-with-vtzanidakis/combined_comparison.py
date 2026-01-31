@@ -1,11 +1,8 @@
-#================================================================================
-#combined blackjack monte carlo exploring starts comparison
-#================================================================================
-#this script combines two implementations of monte carlo es for blackjack:
+
 #    1. koukosias athanasios (akoukosias) - 2025-2026
 #    2. tzanidakis v. (vtzanidakis)
 #
-#critical: both algorithms are trained on the exact same episodes.
+#critical!!!: both algorithms are trained on the exact same episodes.
 #a shared episode generator creates identical sequences of:
 #    - initial player hands
 #    - initial dealer hands  
@@ -15,7 +12,7 @@
 #this ensures a fair comparison of the two implementations.
 #
 #output: 4 interactive policy plots (2 per algorithm x 2 ace conditions)
-#each cell is clickable to show detailed statistics explaining the policy decision.
+#each cell is clickable to show detailed statistics explaining the policy decision(only when running obviously:)  ) .
 #================================================================================
 
 import numpy as np
@@ -786,20 +783,20 @@ def create_algorithm_stats_multiplot(algorithm, usable_ace, save_prefix=None):
     ══════════════════════════════
     
     POLICY DISTRIBUTION:
-      • STICK actions: {stick_states} states ({stick_states}%)
-      • HIT actions: {hit_states} states ({hit_states}%)
+      STICK actions: {stick_states} states ({stick_states}%)
+      HIT actions: {hit_states} states ({hit_states}%)
     
     AVERAGE OUTCOMES:
-      • Player Win Rate: {avg_player_win:.1f}%
-      • Dealer Win Rate: {avg_dealer_win:.1f}%
-      • Draw Rate: {avg_draw:.1f}%
+      Player Win Rate: {avg_player_win:.1f}%
+      Dealer Win Rate: {avg_dealer_win:.1f}%
+      Draw Rate: {avg_draw:.1f}%
     
     BUST RATES:
-      • Player Bust: {avg_player_bust:.1f}%
-      • Dealer Bust: {avg_dealer_bust:.1f}%
+      Player Bust: {avg_player_bust:.1f}%
+      Dealer Bust: {avg_dealer_bust:.1f}%
     
     EXPECTED VALUE:
-      • Average Reward: {overall_avg_reward:+.4f}
+      Average Reward: {overall_avg_reward:+.4f}
     
     ══════════════════════════════
     Click on any plot cell for
@@ -1116,10 +1113,8 @@ class InteractivePolicyPlot:
         
         avg_reward = stats['total_reward'] / total
         
-        summary = f"""
-        ═══════════════════════════════════════
-        DECISION ANALYSIS
-        ═══════════════════════════════════════
+        summary = f""" DECISION ANALYSIS
+ 
         
         State: ({player_sum}, {dealer_showing}, {self.usable_ace})
         
